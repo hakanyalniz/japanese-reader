@@ -7,7 +7,7 @@ const Layout = () => {
   return (
     <div className="grid-container">
       <TopNavBar />
-      <main className="container">
+      <main>
         <Outlet />
         {/* This is where child components (like Home, Blogs) will render */}
       </main>

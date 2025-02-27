@@ -1,0 +1,18 @@
+.grid-container {
+  min-height: 100vh;
+
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.container {
+  text-align: center;
+  max-width: 1280px;
+  padding: 10px 2rem;
+  margin: 0 auto;
+  min-height: 100%;
+}
+
+footer {
+  text-align: center;
+}

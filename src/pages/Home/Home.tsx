@@ -1,7 +1,7 @@
 import SidePanel from "../../components/SidePanel/SidePanel";
 import "./Home.css";
 import ePub, { Rendition } from "epubjs";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 function Home() {
   const [isEpubDisplayed, setIsEpubDisplayed] = useState(false); // Track if EPUB is being displayed
@@ -30,11 +30,11 @@ function Home() {
           const book = ePub(e.target.result); // Load the EPUB file
 
           const rendition = book.renderTo(viewerRef.current, {
-            width: "100%", // Full width
-            height: "100%", // Full height
-            flow: "scrolled", // Scrollable content
+            width: "90%", // Full width
+            height: "90%", // Full height
+            flow: "paginated", // Scrollable content
             allowScriptedContent: true,
-            spread: "none", // Optional: specify spread style (none, both, or even/odd)
+            spread: "none",
           });
 
           rendition.themes.register("gray", {
@@ -42,7 +42,12 @@ function Home() {
           });
           rendition.themes.select("gray");
 
-          rendition.display(); // Display the first chapter
+          rendition.display();
+
+          // // Navigation loaded
+          // book.loaded.navigation.then(function (toc) {
+          //   console.log(toc);
+          // });
 
           setCurrentRendition(rendition); // Store the rendition in state
           setIsEpubDisplayed(true); // EPUB is now displayed
@@ -55,11 +60,39 @@ function Home() {
     }
   };
 
+  // handle pagination controls
+  const handleNextPage = () => {
+    if (currentRendition) {
+      currentRendition.next();
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentRendition) {
+      currentRendition.prev();
+    }
+  };
+
+  // navigate pagination via keyboard
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (currentRendition) {
+        if (event.key === "ArrowRight") {
+          currentRendition.next();
+        } else if (event.key === "ArrowLeft") {
+          currentRendition.prev();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [currentRendition]);
+
   // Clear the EPUB content and reset the viewer
   const handleRemoveEbook = () => {
     if (currentRendition) {
       currentRendition.destroy(); // Destroy the current rendition and clear the viewer
-      currentRendition.current = null; // Reset the ref
     }
     setIsEpubDisplayed(false); // Reset the state
   };
@@ -87,6 +120,22 @@ function Home() {
               />
             </div>
           )}
+        </div>
+        <div>
+          <button
+            className="nav-button"
+            onClick={handlePrevPage}
+            disabled={!currentRendition}
+          >
+            Previous Page
+          </button>
+          <button
+            className="nav-button"
+            onClick={handleNextPage}
+            disabled={!currentRendition}
+          >
+            Next Page
+          </button>
         </div>
       </div>
 

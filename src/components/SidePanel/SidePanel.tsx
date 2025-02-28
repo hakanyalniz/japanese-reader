@@ -11,7 +11,7 @@ const SidePanel = () => {
   return (
     <div className={`side-panel ${panelVisibility ? "show" : "hide"}`}>
       <div id="panel-move" onClick={handlePanelMove}>
-        {"<"}
+        {"<<<"}
       </div>
       Side Panel Content
     </div>

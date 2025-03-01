@@ -19,7 +19,7 @@
 
 #ebook-navigation {
   position: absolute;
-  top: 15px;
+  top: 10px;
   right: 50vw;
 }
 
@@ -29,6 +29,7 @@
 
 #add-remove-container {
   position: absolute;
-  top: 15px;
+  top: 10px;
   right: 0;
+  margin-right: 10px;
 }

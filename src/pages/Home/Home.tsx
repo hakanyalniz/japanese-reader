@@ -99,6 +99,39 @@ function Home() {
     }
   }, [currentRendition]);
 
+  // get the kanji that the user clicked on
+  useEffect(() => {
+    currentRendition?.on("click", () => {
+      const iframe = document.querySelector("iframe");
+      if (!iframe) return;
+
+      // Access the iframe's document
+      const iframeDoc =
+        iframe.contentDocument || iframe.contentWindow?.document;
+      if (!iframeDoc) return;
+
+      // Get the selection within the iframe
+      const selection = iframeDoc.getSelection();
+      if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const { startContainer, startOffset } = range;
+
+        // Ensure the clicked target is a text node
+        if (startContainer.nodeType === Node.TEXT_NODE) {
+          const clickedCharacter = startContainer.textContent?.[startOffset];
+          console.log(startContainer.textContent);
+          if (clickedCharacter) {
+            console.log(clickedCharacter);
+          } else {
+            console.log("You clicked outside the text.");
+          }
+        } else {
+          console.log("You clicked outside the text.");
+        }
+      }
+    });
+  }, [currentRendition]);
+
   // Clear the EPUB content and reset the viewer
   const handleRemoveEbook = () => {
     if (currentRendition) {

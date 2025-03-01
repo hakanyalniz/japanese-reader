@@ -30,8 +30,8 @@ function Home() {
           const book = ePub(e.target.result); // Load the EPUB file
 
           const rendition = book.renderTo(viewerRef.current, {
-            width: "90%",
-            height: "90%",
+            width: "100%",
+            height: "100%",
             flow: "paginated",
             allowScriptedContent: true,
             spread: "none",
@@ -86,6 +86,7 @@ function Home() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [currentRendition]);
 
+  // Navigate using keyboard keys inside iframe
   useEffect(() => {
     if (currentRendition) {
       currentRendition.on("keydown", (event: { key: string }) => {
@@ -109,16 +110,37 @@ function Home() {
   return (
     <div className="home-flex">
       <div className="container">
-        <div id="viewer" ref={viewerRef}>
-          {/* "Remove Ebook" button to reset the state and clean up the viewer */}
+        <div id="ebook-navigation">
+          <button
+            className="nav-button"
+            onClick={handlePrevPage}
+            disabled={!currentRendition}
+          >
+            Previous
+          </button>
+          <button
+            className="nav-button"
+            onClick={handleNextPage}
+            disabled={!currentRendition}
+          >
+            Next
+          </button>
+        </div>
+        <div id="add-remove-container">
           {isEpubDisplayed && (
-            <button onClick={handleRemoveEbook}>Remove Ebook</button>
+            <button className="nav-button" onClick={handleRemoveEbook}>
+              Remove Ebook
+            </button>
           )}
           {!isEpubDisplayed && ( // Only render the button and input if EPUB isn't displayed
             <div>
-              <span className="nav-button" onClick={handleAddEbook}>
+              <button
+                className="nav-button"
+                id="add-ebook"
+                onClick={handleAddEbook}
+              >
                 Add Ebook
-              </span>
+              </button>
               <input
                 type="file"
                 id="fileInput"
@@ -130,22 +152,8 @@ function Home() {
             </div>
           )}
         </div>
-        <div>
-          <button
-            className="nav-button"
-            onClick={handlePrevPage}
-            disabled={!currentRendition}
-          >
-            Previous Page
-          </button>
-          <button
-            className="nav-button"
-            onClick={handleNextPage}
-            disabled={!currentRendition}
-          >
-            Next Page
-          </button>
-        </div>
+
+        <div id="viewer" ref={viewerRef}></div>
       </div>
 
       <SidePanel />

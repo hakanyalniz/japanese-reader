@@ -30,24 +30,20 @@ function Home() {
           const book = ePub(e.target.result); // Load the EPUB file
 
           const rendition = book.renderTo(viewerRef.current, {
-            width: "90%", // Full width
-            height: "90%", // Full height
-            flow: "paginated", // Scrollable content
+            width: "90%",
+            height: "90%",
+            flow: "paginated",
             allowScriptedContent: true,
             spread: "none",
           });
 
+          // select themes to make the epub viewer look different
           rendition.themes.register("gray", {
             body: { background: "#242424", color: "white" },
           });
           rendition.themes.select("gray");
 
           rendition.display();
-
-          // // Navigation loaded
-          // book.loaded.navigation.then(function (toc) {
-          //   console.log(toc);
-          // });
 
           setCurrentRendition(rendition); // Store the rendition in state
           setIsEpubDisplayed(true); // EPUB is now displayed
@@ -60,7 +56,7 @@ function Home() {
     }
   };
 
-  // handle pagination controls
+  // handle pagination controls via buttons
   const handleNextPage = () => {
     if (currentRendition) {
       currentRendition.next();
@@ -73,7 +69,7 @@ function Home() {
     }
   };
 
-  // navigate pagination via keyboard
+  // navigate pagination via keyboard, one works inside iframe, the other outside it
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (currentRendition) {
@@ -85,8 +81,21 @@ function Home() {
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [currentRendition]);
+
+  useEffect(() => {
+    if (currentRendition) {
+      currentRendition.on("keydown", (event: { key: string }) => {
+        if (event.key === "ArrowRight") {
+          currentRendition.next();
+        } else if (event.key === "ArrowLeft") {
+          currentRendition.prev();
+        }
+      });
+    }
   }, [currentRendition]);
 
   // Clear the EPUB content and reset the viewer

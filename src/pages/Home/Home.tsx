@@ -39,7 +39,11 @@ function Home() {
 
           // select themes to make the epub viewer look different
           rendition.themes.register("gray", {
-            body: { background: "#242424", color: "white" },
+            body: {
+              background: "#242424",
+              color: "white",
+              "font-size": "20px",
+            },
           });
           rendition.themes.select("gray");
 
@@ -55,6 +59,24 @@ function Home() {
       alert("Please upload a valid EPUB file.");
     }
   };
+
+  // Resize the epub font to make it responsive
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+
+      if (width <= 768) {
+        currentRendition?.themes.fontSize("12px"); // Small font size for mobile
+      } else if (width <= 1024) {
+        currentRendition?.themes.fontSize("14px"); // Medium font size for tablets
+      } else {
+        currentRendition?.themes.fontSize("18px"); // Larger font size for desktops
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [currentRendition]);
 
   // handle pagination controls via buttons
   const handleNextPage = () => {

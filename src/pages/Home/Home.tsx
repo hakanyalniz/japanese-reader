@@ -42,7 +42,6 @@ function Home() {
             body: {
               background: "#242424",
               color: "white",
-              "font-size": "20px",
             },
           });
           rendition.themes.select("gray");
@@ -61,18 +60,38 @@ function Home() {
   };
 
   // Resize the epub font to make it responsive
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
+  const handleResize = () => {
+    const width = window.innerWidth;
+    const viewer = document.querySelector("#viewer");
 
-      if (width <= 768) {
-        currentRendition?.themes.fontSize("12px"); // Small font size for mobile
-      } else if (width <= 1024) {
-        currentRendition?.themes.fontSize("14px"); // Medium font size for tablets
-      } else {
-        currentRendition?.themes.fontSize("18px"); // Larger font size for desktops
+    if (width <= 600) {
+      currentRendition?.resize(300, viewer?.offsetHeight);
+    } else if (width <= 915) {
+      currentRendition?.themes.fontSize("10px"); // Small font size for mobile
+      currentRendition?.resize(500, viewer?.offsetHeight);
+    } else if (width <= 1115) {
+      currentRendition?.themes.fontSize("12px"); // Medium font size for tablets
+      currentRendition?.resize(800, viewer?.offsetHeight);
+    } else if (width <= 1400) {
+      currentRendition?.themes.fontSize("14px"); // Medium font size for tablets
+      currentRendition?.resize(1000, viewer?.offsetHeight);
+    } else {
+      currentRendition?.themes.fontSize("18px"); // Larger font size for desktops
+      currentRendition?.resize(viewer?.offsetWidth, viewer?.offsetHeight);
+    }
+  };
+
+  // Resize the epub font to make it responsive
+  useEffect(() => {
+    // Call handleResize at the beginning for resizing the window
+    if (currentRendition && typeof currentRendition.resize === "function") {
+      try {
+        handleResize();
+      } catch (e) {
+        // For some reason the above code gives error despite working successfully
+        // So we just catch the error without doing
       }
-    };
+    }
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);

@@ -59,39 +59,51 @@ function Home() {
     }
   };
 
+  // the resize method of epubjs is bugged, so I implemented my own
+  const safeResize = (rendition: Rendition, width: number, height: number) => {
+    if (!rendition) return;
+
+    try {
+      // First try the standard resize
+      rendition.resize(width, height);
+    } catch (e) {
+      console.log(e);
+      // If that fails, implement a fallback
+      if (rendition.settings) {
+        if (width) rendition.settings.width = width;
+        if (height) rendition.settings.height = height;
+      }
+    }
+  };
+
   // Resize the epub font to make it responsive
   const handleResize = () => {
     const width = window.innerWidth;
-    const viewer = document.querySelector("#viewer");
+    const viewer: HTMLElement = document.querySelector("#viewer")!;
+
+    if (!currentRendition) return;
 
     if (width <= 600) {
-      currentRendition?.resize(300, viewer?.offsetHeight);
+      currentRendition.resize(300, viewer.offsetHeight);
     } else if (width <= 915) {
-      currentRendition?.themes.fontSize("10px"); // Small font size for mobile
-      currentRendition?.resize(500, viewer?.offsetHeight);
+      currentRendition.themes.fontSize("10px"); // Small font size for mobile
+      currentRendition.resize(500, viewer.offsetHeight);
     } else if (width <= 1115) {
-      currentRendition?.themes.fontSize("12px"); // Medium font size for tablets
-      currentRendition?.resize(800, viewer?.offsetHeight);
+      currentRendition.themes.fontSize("12px"); // Medium font size for tablets
+      safeResize(currentRendition, 800, viewer.offsetHeight);
     } else if (width <= 1400) {
-      currentRendition?.themes.fontSize("14px"); // Medium font size for tablets
-      currentRendition?.resize(1000, viewer?.offsetHeight);
+      currentRendition.themes.fontSize("14px"); // Medium font size for tablets
+      currentRendition.resize(1000, viewer.offsetHeight);
     } else {
-      currentRendition?.themes.fontSize("18px"); // Larger font size for desktops
-      currentRendition?.resize(viewer?.offsetWidth, viewer?.offsetHeight);
+      currentRendition.themes.fontSize("18px"); // Larger font size for desktops
+      currentRendition.resize(viewer.offsetWidth, viewer.offsetHeight);
     }
   };
 
   // Resize the epub font to make it responsive
   useEffect(() => {
     // Call handleResize at the beginning for resizing the window
-    if (currentRendition && typeof currentRendition.resize === "function") {
-      try {
-        handleResize();
-      } catch (e) {
-        // For some reason the above code gives error despite working successfully
-        // So we just catch the error without doing
-      }
-    }
+    handleResize();
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);

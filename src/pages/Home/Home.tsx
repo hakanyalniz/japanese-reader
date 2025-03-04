@@ -3,6 +3,15 @@ import "./Home.css";
 import ePub, { Rendition } from "epubjs";
 import { useState, useRef, useEffect } from "react";
 
+import {
+  handleResize,
+  handleNextPage,
+  handlePrevPage,
+  handleRemoveEbook,
+  handleKeyDown,
+  handleIFrameKey,
+} from "./helpers";
+
 function Home() {
   const [isEpubDisplayed, setIsEpubDisplayed] = useState(false); // Track if EPUB is being displayed
 
@@ -60,84 +69,33 @@ function Home() {
   };
 
   // Resize the epub font to make it responsive
-  const handleResize = () => {
-    const width = window.innerWidth;
-    const viewer = document.querySelector("#viewer");
-
-    if (width <= 600) {
-      currentRendition?.resize(300, viewer?.offsetHeight);
-    } else if (width <= 915) {
-      currentRendition?.themes.fontSize("10px"); // Small font size for mobile
-      currentRendition?.resize(500, viewer?.offsetHeight);
-    } else if (width <= 1115) {
-      currentRendition?.themes.fontSize("12px"); // Medium font size for tablets
-      currentRendition?.resize(800, viewer?.offsetHeight);
-    } else if (width <= 1400) {
-      currentRendition?.themes.fontSize("14px"); // Medium font size for tablets
-      currentRendition?.resize(1000, viewer?.offsetHeight);
-    } else {
-      currentRendition?.themes.fontSize("18px"); // Larger font size for desktops
-      currentRendition?.resize(viewer?.offsetWidth, viewer?.offsetHeight);
-    }
-  };
-
-  // Resize the epub font to make it responsive
   useEffect(() => {
     // Call handleResize at the beginning for resizing the window
-    if (currentRendition && typeof currentRendition.resize === "function") {
-      try {
-        handleResize();
-      } catch (e) {
-        // For some reason the above code gives error despite working successfully
-        // So we just catch the error without doing
-      }
-    }
+    handleResize(currentRendition);
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener("resize", () => handleResize(currentRendition));
+
+    return () =>
+      window.removeEventListener("resize", () =>
+        handleResize(currentRendition)
+      );
   }, [currentRendition]);
-
-  // handle pagination controls via buttons
-  const handleNextPage = () => {
-    if (currentRendition) {
-      currentRendition.next();
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (currentRendition) {
-      currentRendition.prev();
-    }
-  };
 
   // navigate pagination via keyboard, one works inside iframe, the other outside it
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (currentRendition) {
-        if (event.key === "ArrowRight") {
-          currentRendition.next();
-        } else if (event.key === "ArrowLeft") {
-          currentRendition.prev();
-        }
-      }
-    };
+    document.addEventListener("keydown", (e) =>
+      handleKeyDown(currentRendition, e)
+    );
 
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => document.removeEventListener("keydown", handleKeyDown);
+    return () =>
+      document.addEventListener("keydown", (e) =>
+        handleKeyDown(currentRendition, e)
+      );
   }, [currentRendition]);
 
   // Navigate using keyboard keys inside iframe
   useEffect(() => {
-    if (currentRendition) {
-      currentRendition.on("keydown", (event: { key: string }) => {
-        if (event.key === "ArrowRight") {
-          currentRendition.next();
-        } else if (event.key === "ArrowLeft") {
-          currentRendition.prev();
-        }
-      });
-    }
+    handleIFrameKey(currentRendition);
   }, [currentRendition]);
 
   // get the kanji that the user clicked on
@@ -173,28 +131,20 @@ function Home() {
     });
   }, [currentRendition]);
 
-  // Clear the EPUB content and reset the viewer
-  const handleRemoveEbook = () => {
-    if (currentRendition) {
-      currentRendition.destroy(); // Destroy the current rendition and clear the viewer
-    }
-    setIsEpubDisplayed(false); // Reset the state
-  };
-
   return (
     <div className="home-flex">
       <div className="container">
         <div id="ebook-navigation">
           <button
             className="nav-button"
-            onClick={handlePrevPage}
+            onClick={() => handlePrevPage(currentRendition)}
             disabled={!currentRendition}
           >
             Previous
           </button>
           <button
             className="nav-button"
-            onClick={handleNextPage}
+            onClick={() => handleNextPage(currentRendition)}
             disabled={!currentRendition}
           >
             Next
@@ -202,7 +152,12 @@ function Home() {
         </div>
         <div id="add-remove-container">
           {isEpubDisplayed && (
-            <button className="nav-button" onClick={handleRemoveEbook}>
+            <button
+              className="nav-button"
+              onClick={() =>
+                handleRemoveEbook(currentRendition, setIsEpubDisplayed)
+              }
+            >
               Remove Ebook
             </button>
           )}

@@ -1,4 +1,5 @@
 import ePub, { Rendition } from "epubjs";
+import axios from "axios";
 
 // When file input changes display the epub file
 export const handleFileInput = (
@@ -44,6 +45,25 @@ export const handleFileInput = (
   } else {
     alert("Please upload a valid EPUB file.");
   }
+};
+
+// Fetch data from Flask
+export const handleDataFetching = (
+  setDictionaryData: React.Dispatch<React.SetStateAction<undefined>>,
+  key: string,
+  value: string
+) => {
+  axios
+    .get("http://127.0.0.1:5000/api/data", {
+      params: { [key]: value },
+    })
+    .then((response) => {
+      console.log("Data from Flask:", response.data);
+      setDictionaryData(response.data);
+    })
+    .catch((error) => {
+      console.error("Error fetching data from Flask:", error);
+    });
 };
 
 /**
@@ -155,4 +175,9 @@ export const handleIFrameKey = (currentRendition: Rendition | null) => {
       }
     });
   }
+};
+
+// Clicking the button will click the hidden file input
+export const handleAddEbook = () => {
+  document.getElementById("fileInput")?.click();
 };

@@ -5,16 +5,19 @@ import { useState, useRef, useEffect } from "react";
 
 import {
   handleFileInput,
+  handleDataFetching,
   handleResize,
   handleNextPage,
   handlePrevPage,
   handleRemoveEbook,
   handleKeyDown,
   handleIFrameKey,
+  handleAddEbook,
 } from "./helpers";
 
 function Home() {
   const [isEpubDisplayed, setIsEpubDisplayed] = useState(false); // Track if EPUB is being displayed
+  const [dictionaryData, setDictionaryData] = useState(); // Store the fetched dictionary data
 
   const fileInputRef = useRef<HTMLInputElement>(null); // Ref for the file input
   const viewerRef = useRef<HTMLDivElement>(null); // Ref for the viewer container
@@ -22,11 +25,6 @@ function Home() {
   const [currentRendition, setCurrentRendition] = useState<Rendition | null>(
     null
   );
-
-  // Clicking the button will click the hidden file input
-  const handleAddEbook = () => {
-    document.getElementById("fileInput")?.click();
-  };
 
   // Resize the epub font to make it responsive
   useEffect(() => {
@@ -81,6 +79,7 @@ function Home() {
           console.log(startContainer.textContent);
           if (clickedCharacter) {
             console.log(clickedCharacter);
+            handleDataFetching(setDictionaryData, "query", clickedCharacter);
           } else {
             console.log("You clicked outside the text.");
           }

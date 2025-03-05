@@ -8,27 +8,24 @@ CORS(app)  # Enable CORS for React frontend
 # Database setup
 DB_FILE = "data.db"
 
+
 def get_db_connection():
     conn = sqlite3.connect(DB_FILE)
     conn.row_factory = sqlite3.Row
     return conn
 
-@app.route("/data", methods=["GET"])
+
+@app.route("/api/data", methods=["GET"])
 def get_data():
     conn = get_db_connection()
-    cursor = conn.execute("SELECT * FROM entries")
-    rows = [dict(row) for row in cursor.fetchall()]
-    conn.close()
-    return jsonify(rows)
+    value = request.args.get('query')
 
-@app.route("/data", methods=["POST"])
-def add_data():
-    data = request.json
-    conn = get_db_connection()
-    conn.execute("INSERT INTO entries (id) VALUES (?)", (data["id"],))
-    conn.commit()
-    conn.close()
-    return jsonify({"status": "success"}), 201
+    # cursor = conn.execute("SELECT * FROM entries")
+    # rows = [dict(row) for row in cursor.fetchall()]
+    # conn.close()
+    # return jsonify(rows)
+    return value
+
 
 if __name__ == "__main__":
     app.run(debug=True)

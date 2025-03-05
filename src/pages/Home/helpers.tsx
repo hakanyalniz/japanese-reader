@@ -57,12 +57,11 @@ export const handleDataFetching = (
       | null
     >
   >,
-  key: string,
-  value: string
+  params: Record<string, string> // Accept multiple parameters as an object
 ) => {
   axios
     .get("http://127.0.0.1:5000/api/data", {
-      params: { [key]: value },
+      params,
     })
     .then((response) => {
       console.log("Data from Flask:", response.data);

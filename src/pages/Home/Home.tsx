@@ -22,7 +22,7 @@ function Home() {
   >([]); // Store the fetched dictionary data
   // When we find the query inside the dictionary data, store them here
   const [foundDictionaryData, setFoundDictionaryData] = useState<
-    { [key: string]: unknown }[] | null
+    { [key: string]: unknown }[]
   >([]);
 
   const clickedQuerySentence = useRef<string | null>(null); // Ref for the clicked text for searching
@@ -92,7 +92,9 @@ function Home() {
             console.log(clickedCharacter);
             clickedQuery.current = clickedCharacter;
 
-            handleDataFetching(setDictionaryData, "query", clickedCharacter);
+            handleDataFetching(setDictionaryData, {
+              query: clickedCharacter,
+            });
           }
         }
       }
@@ -116,7 +118,9 @@ function Home() {
 
     const endIndex = clickedQuerySentence.current.length;
 
+    console.time("Time Test");
     setFoundDictionaryData((prevList) => [...prevList, ...loopSearchDict()]);
+    console.timeEnd("Time Test");
 
     // Then, search for the next character in the query
     // look at the kanji field and see if the rest of the query is there
@@ -133,9 +137,9 @@ function Home() {
         !clickedQuery.current ||
         !clickedQuerySentence.current
       )
-        return;
+        return [];
 
-      const result = [];
+      const result: { [key: string]: unknown }[] = [];
       let currentWordBeingSearched = "";
 
       for (let x = 0; x < dictionaryData.length; x++) {

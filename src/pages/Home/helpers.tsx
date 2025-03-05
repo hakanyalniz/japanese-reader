@@ -49,7 +49,14 @@ export const handleFileInput = (
 
 // Fetch data from Flask
 export const handleDataFetching = (
-  setDictionaryData: React.Dispatch<React.SetStateAction<undefined>>,
+  setDictionaryData: React.Dispatch<
+    React.SetStateAction<
+      | {
+          [key: string]: unknown;
+        }[]
+      | null
+    >
+  >,
   key: string,
   value: string
 ) => {

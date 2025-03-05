@@ -17,7 +17,16 @@ import {
 
 function Home() {
   const [isEpubDisplayed, setIsEpubDisplayed] = useState(false); // Track if EPUB is being displayed
-  const [dictionaryData, setDictionaryData] = useState(); // Store the fetched dictionary data
+  const [dictionaryData, setDictionaryData] = useState<
+    { [key: string]: unknown }[] | null
+  >([]); // Store the fetched dictionary data
+  // When we find the query inside the dictionary data, store them here
+  const [foundDictionaryData, setFoundDictionaryData] = useState<
+    { [key: string]: unknown }[] | null
+  >([]);
+
+  const clickedQuerySentence = useRef<string | null>(null); // Ref for the clicked text for searching
+  const clickedQuery = useRef<string>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null); // Ref for the file input
   const viewerRef = useRef<HTMLDivElement>(null); // Ref for the viewer container
@@ -77,18 +86,74 @@ function Home() {
         if (startContainer.nodeType === Node.TEXT_NODE) {
           const clickedCharacter = startContainer.textContent?.[startOffset];
           console.log(startContainer.textContent);
+          clickedQuerySentence.current = startContainer.textContent;
+
           if (clickedCharacter) {
             console.log(clickedCharacter);
+            clickedQuery.current = clickedCharacter;
+
             handleDataFetching(setDictionaryData, "query", clickedCharacter);
-          } else {
-            console.log("You clicked outside the text.");
           }
-        } else {
-          console.log("You clicked outside the text.");
         }
       }
     });
   }, [currentRendition]);
+
+  useEffect(() => {
+    if (
+      !dictionaryData ||
+      !clickedQuery.current ||
+      !clickedQuerySentence.current
+    )
+      return;
+    // Reset the founds every search
+    setFoundDictionaryData([]);
+
+    // Get the index of the query from the sentence
+    const startIndex = clickedQuerySentence.current.indexOf(
+      clickedQuery.current
+    );
+
+    const endIndex = clickedQuerySentence.current.length;
+
+    setFoundDictionaryData((prevList) => [...prevList, ...loopSearchDict()]);
+
+    // Then, search for the next character in the query
+    // look at the kanji field and see if the rest of the query is there
+    // 引きこもり;
+    // Start searching the sentence from that point on
+    // Fetch all the data that hits
+    // see if the character at clickedQuerySentence[y] is equal to dictionaryData[x]
+    // if not, add the next character, and see if that is equal
+    // and so on. The idea is that, we start searching from the 引
+    // all the way 引きこもり, so we can find the word.
+    const loopSearchDict = () => {
+      if (
+        !dictionaryData ||
+        !clickedQuery.current ||
+        !clickedQuerySentence.current
+      )
+        return;
+
+      const result = [];
+      let currentWordBeingSearched = "";
+      for (let x = 0; x < dictionaryData.length; x++) {
+        currentWordBeingSearched = "";
+        for (let y = startIndex; y < endIndex; y++) {
+          if (currentWordBeingSearched == dictionaryData[x]["kanji"]) {
+            if (!result.includes(dictionaryData[x])) {
+              result.push(dictionaryData[x]);
+            }
+          } else {
+            currentWordBeingSearched += clickedQuerySentence.current[y];
+          }
+        }
+      }
+      return result;
+    };
+  }, [dictionaryData]);
+
+  useEffect(() => console.log(foundDictionaryData), [foundDictionaryData]);
 
   return (
     <div className="home-flex">

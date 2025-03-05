@@ -1,9 +1,10 @@
 import SidePanel from "../../components/SidePanel/SidePanel";
 import "./Home.css";
-import ePub, { Rendition } from "epubjs";
+import { Rendition } from "epubjs";
 import { useState, useRef, useEffect } from "react";
 
 import {
+  handleFileInput,
   handleResize,
   handleNextPage,
   handlePrevPage,
@@ -25,47 +26,6 @@ function Home() {
   // Clicking the button will click the hidden file input
   const handleAddEbook = () => {
     document.getElementById("fileInput")?.click();
-  };
-
-  // When file input changes display the epub file
-  const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-
-    if (file && file.type === "application/epub+zip") {
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        if (viewerRef.current && e.target?.result) {
-          const book = ePub(e.target.result); // Load the EPUB file
-
-          const rendition = book.renderTo(viewerRef.current, {
-            width: "100%",
-            height: "100%",
-            flow: "paginated",
-            allowScriptedContent: true,
-            spread: "none",
-          });
-
-          // select themes to make the epub viewer look different
-          rendition.themes.register("gray", {
-            body: {
-              background: "#242424",
-              color: "white",
-            },
-          });
-          rendition.themes.select("gray");
-
-          rendition.display();
-
-          setCurrentRendition(rendition); // Store the rendition in state
-          setIsEpubDisplayed(true); // EPUB is now displayed
-        }
-      };
-
-      reader.readAsArrayBuffer(file); // Read the EPUB file as an ArrayBuffer
-    } else {
-      alert("Please upload a valid EPUB file.");
-    }
   };
 
   // Resize the epub font to make it responsive
@@ -175,7 +135,14 @@ function Home() {
                 id="fileInput"
                 accept=".epub"
                 ref={fileInputRef}
-                onChange={handleFileInput}
+                onChange={(e) =>
+                  handleFileInput(
+                    e,
+                    setCurrentRendition,
+                    viewerRef,
+                    setIsEpubDisplayed
+                  )
+                }
                 style={{ display: "none" }} // Hides the input element but keeps it accessible
               />
             </div>

@@ -1,4 +1,50 @@
-import { Rendition } from "epubjs";
+import ePub, { Rendition } from "epubjs";
+
+// When file input changes display the epub file
+export const handleFileInput = (
+  event: React.ChangeEvent<HTMLInputElement>,
+  setCurrentRendition: React.Dispatch<React.SetStateAction<Rendition | null>>,
+  viewerRef: React.RefObject<HTMLDivElement | null>,
+  setIsEpubDisplayed: React.Dispatch<React.SetStateAction<boolean>>
+) => {
+  const file = event.target.files?.[0];
+
+  if (file && file.type === "application/epub+zip") {
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      if (viewerRef.current && e.target?.result) {
+        const book = ePub(e.target.result); // Load the EPUB file
+
+        const rendition = book.renderTo(viewerRef.current, {
+          width: "100%",
+          height: "100%",
+          flow: "paginated",
+          allowScriptedContent: true,
+          spread: "none",
+        });
+
+        // select themes to make the epub viewer look different
+        rendition.themes.register("gray", {
+          body: {
+            background: "#242424",
+            color: "white",
+          },
+        });
+        rendition.themes.select("gray");
+
+        rendition.display();
+
+        setCurrentRendition(rendition); // Store the rendition in state
+        setIsEpubDisplayed(true); // EPUB is now displayed
+      }
+    };
+
+    reader.readAsArrayBuffer(file); // Read the EPUB file as an ArrayBuffer
+  } else {
+    alert("Please upload a valid EPUB file.");
+  }
+};
 
 /**
  * Resizes the IFrame that displays epub. A replacement for the official rendition.resize method.

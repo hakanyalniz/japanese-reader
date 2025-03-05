@@ -137,14 +137,21 @@ function Home() {
 
       const result = [];
       let currentWordBeingSearched = "";
+
       for (let x = 0; x < dictionaryData.length; x++) {
         currentWordBeingSearched = "";
-        for (let y = startIndex; y < endIndex; y++) {
+        for (let y = startIndex; y <= endIndex; y++) {
           if (currentWordBeingSearched == dictionaryData[x]["kanji"]) {
+            // Ensure that the result is not repeated inside the results
             if (!result.includes(dictionaryData[x])) {
               result.push(dictionaryData[x]);
+              break;
             }
           } else {
+            // Add the first kanji in the dict list, so it is the default meaning
+            if (x == 0 && y == startIndex) {
+              result.push(dictionaryData[x]);
+            }
             currentWordBeingSearched += clickedQuerySentence.current[y];
           }
         }
@@ -153,7 +160,10 @@ function Home() {
     };
   }, [dictionaryData]);
 
-  useEffect(() => console.log(foundDictionaryData), [foundDictionaryData]);
+  useEffect(
+    () => console.log("foundDictionaryData", foundDictionaryData),
+    [foundDictionaryData]
+  );
 
   return (
     <div className="home-flex">

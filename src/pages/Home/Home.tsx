@@ -6,6 +6,7 @@ import { useState, useRef, useEffect } from "react";
 import {
   handleFileInput,
   handleDataFetching,
+  loopSearchDict,
   handleResize,
   handleNextPage,
   handlePrevPage,
@@ -101,6 +102,8 @@ function Home() {
     });
   }, [currentRendition]);
 
+  // When new dictionary data comes, it means something new was clicked
+  // loop through the dictionary data and get what we want
   useEffect(() => {
     if (
       !dictionaryData ||
@@ -108,60 +111,16 @@ function Home() {
       !clickedQuerySentence.current
     )
       return;
-    // Reset the founds every search
-    setFoundDictionaryData([]);
-
-    // Get the index of the query from the sentence
-    const startIndex = clickedQuerySentence.current.indexOf(
-      clickedQuery.current
-    );
-
-    const endIndex = clickedQuerySentence.current.length;
 
     console.time("Time Test");
-    setFoundDictionaryData((prevList) => [...prevList, ...loopSearchDict()]);
+    const loopResults = loopSearchDict(
+      dictionaryData,
+      clickedQuery,
+      clickedQuerySentence,
+      setFoundDictionaryData
+    );
+    setFoundDictionaryData((prevList) => [...prevList, ...loopResults]);
     console.timeEnd("Time Test");
-
-    // Then, search for the next character in the query
-    // look at the kanji field and see if the rest of the query is there
-    // 引きこもり;
-    // Start searching the sentence from that point on
-    // Fetch all the data that hits
-    // see if the character at clickedQuerySentence[y] is equal to dictionaryData[x]
-    // if not, add the next character, and see if that is equal
-    // and so on. The idea is that, we start searching from the 引
-    // all the way 引きこもり, so we can find the word.
-    const loopSearchDict = () => {
-      if (
-        !dictionaryData ||
-        !clickedQuery.current ||
-        !clickedQuerySentence.current
-      )
-        return [];
-
-      const result: { [key: string]: unknown }[] = [];
-      let currentWordBeingSearched = "";
-
-      for (let x = 0; x < dictionaryData.length; x++) {
-        currentWordBeingSearched = "";
-        for (let y = startIndex; y <= endIndex; y++) {
-          if (currentWordBeingSearched == dictionaryData[x]["kanji"]) {
-            // Ensure that the result is not repeated inside the results
-            if (!result.includes(dictionaryData[x])) {
-              result.push(dictionaryData[x]);
-              break;
-            }
-          } else {
-            // Add the first kanji in the dict list, so it is the default meaning
-            if (x == 0 && y == startIndex) {
-              result.push(dictionaryData[x]);
-            }
-            currentWordBeingSearched += clickedQuerySentence.current[y];
-          }
-        }
-      }
-      return result;
-    };
   }, [dictionaryData]);
 
   useEffect(

@@ -72,6 +72,74 @@ export const handleDataFetching = (
     });
 };
 
+interface loopSearchDictInterface {
+  (
+    dictionaryData: {
+      [key: string]: unknown;
+    }[],
+    clickedQuery: React.RefObject<string | null>,
+    clickedQuerySentence: React.RefObject<string | null>,
+    setFoundDictionaryData: React.Dispatch<
+      React.SetStateAction<
+        {
+          [key: string]: unknown;
+        }[]
+      >
+    >
+  ): { [key: string]: unknown }[];
+}
+// Then, search for the next character in the query
+// look at the kanji field and see if the rest of the query is there
+// 引きこもり;
+// Start searching the sentence from that point on
+// Fetch all the data that hits
+// see if the character at clickedQuerySentence[y] is equal to dictionaryData[x]
+// if not, add the next character, and see if that is equal
+// and so on. The idea is that, we start searching from the 引
+// all the way 引きこもり, so we can find the word.
+export const loopSearchDict: loopSearchDictInterface = (
+  dictionaryData,
+  clickedQuery,
+  clickedQuerySentence,
+  setFoundDictionaryData
+) => {
+  if (!dictionaryData || !clickedQuery.current || !clickedQuerySentence.current)
+    return [];
+
+  // Reset the founds every search
+  setFoundDictionaryData([]);
+
+  // Get the index of the query from the sentence
+  const startIndex = clickedQuerySentence.current.indexOf(clickedQuery.current);
+  // How many characters/index should be searched from the general sentence?
+  // Setting the limit to 5 can miss some words, but will catch 99 percent of them, it will also be faster
+  // const endIndex = clickedQuerySentence.current.length;
+  const endIndex = startIndex + 5;
+
+  const result: { [key: string]: unknown }[] = [];
+  let currentWordBeingSearched = "";
+
+  for (let x = 0; x < dictionaryData.length; x++) {
+    currentWordBeingSearched = "";
+    for (let y = startIndex; y <= endIndex; y++) {
+      if (currentWordBeingSearched == dictionaryData[x]["kanji"]) {
+        // Ensure that the result is not repeated inside the results
+        if (!result.includes(dictionaryData[x])) {
+          result.push(dictionaryData[x]);
+          break;
+        }
+      } else {
+        // Add the first kanji in the dict list, so it is the default meaning
+        if (x == 0 && y == startIndex) {
+          result.push(dictionaryData[x]);
+        }
+        currentWordBeingSearched += clickedQuerySentence.current[y];
+      }
+    }
+  }
+  return result;
+};
+
 /**
  * Resizes the IFrame that displays epub. A replacement for the official rendition.resize method.
  */

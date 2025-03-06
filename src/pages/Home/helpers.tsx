@@ -162,10 +162,32 @@ export const safeResize = (
  */
 export const handleResize = (currentRendition: Rendition | null) => {
   const width = window.innerWidth;
+
   const viewer: HTMLElement = document.querySelector("#viewer")!;
+  const sidePanel: HTMLElement | null = document.querySelector(".side-panel");
 
-  if (!currentRendition) return;
+  if (!currentRendition || !sidePanel) return;
 
+  // control the side panel
+  // Apply specific class to side panel, which will then change kanji info font
+  if (width <= 1600) {
+    sidePanel.style.width = "200px";
+
+    sidePanel.classList.remove("side-panel-info-40", "side-panel-info-50");
+    sidePanel.classList.add("side-panel-info-30");
+  } else if (width <= 1700) {
+    sidePanel.style.width = "250px";
+
+    sidePanel.classList.remove("side-panel-info-30", "side-panel-info-50");
+    sidePanel.classList.add("side-panel-info-40");
+  } else {
+    sidePanel.style.width = "300px";
+
+    sidePanel.classList.remove("side-panel-info-30", "side-panel-info-40");
+    sidePanel.classList.add("side-panel-info-50");
+  }
+
+  // control the font size and width of viewer
   if (width <= 600) {
     safeResize(currentRendition, 300, viewer.offsetHeight);
   } else if (width <= 915) {
@@ -175,7 +197,7 @@ export const handleResize = (currentRendition: Rendition | null) => {
     currentRendition.themes.fontSize("12px"); // Medium font size for tablets
     safeResize(currentRendition, 800, viewer.offsetHeight);
   } else if (width <= 1400) {
-    currentRendition.themes.fontSize("14px"); // Medium font size for tablets
+    currentRendition.themes.fontSize("13px"); // Medium font size for tablets
     safeResize(currentRendition, 1000, viewer.offsetHeight);
   } else {
     currentRendition.themes.fontSize("18px"); // Larger font size for desktops
@@ -205,6 +227,9 @@ export const handlePrevPage = (currentRendition: Rendition | null) => {
  * Clear the EPUB content and reset the viewer.
  */
 export const handleRemoveEbook = (
+  setFoundDictionaryData: React.Dispatch<
+    React.SetStateAction<DictionaryItem[]>
+  >,
   currentRendition: Rendition | null,
   setIsEpubDisplayed: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
@@ -212,6 +237,8 @@ export const handleRemoveEbook = (
     currentRendition.destroy(); // Destroy the current rendition and clear the viewer
   }
   setIsEpubDisplayed(false); // Reset the state
+  // Empty the items inside the found dictionary, mainly so that they dont appear in side bar
+  setFoundDictionaryData([]);
 };
 
 /**

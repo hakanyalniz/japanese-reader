@@ -17,6 +17,7 @@
 
 .side-panel #panel-move {
   margin: auto;
+  padding-right: 5px;
 }
 
 .side-panel.hide {
@@ -25,6 +26,16 @@
 
 .side-panel.show {
   transform: translateX(0);
+}
+
+.side-panel-info-30 .kanji-def .kanji-card .kanji-info {
+  font-size: 30px;
+}
+.side-panel-info-40 .kanji-def .kanji-card .kanji-info {
+  font-size: 40px;
+}
+.side-panel-info-50 .kanji-def .kanji-card .kanji-info {
+  font-size: 50px;
 }
 
 .kanji-def {

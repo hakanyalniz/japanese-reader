@@ -156,7 +156,11 @@ function Home() {
             <button
               className="nav-button"
               onClick={() =>
-                handleRemoveEbook(currentRendition, setIsEpubDisplayed)
+                handleRemoveEbook(
+                  setFoundDictionaryData,
+                  currentRendition,
+                  setIsEpubDisplayed
+                )
               }
             >
               Remove Ebook

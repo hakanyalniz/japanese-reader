@@ -1,5 +1,5 @@
 import "./SidePanel.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface ChildProps {
   foundDictionaryData: {
@@ -16,8 +16,18 @@ const SidePanel: React.FC<ChildProps> = ({ foundDictionaryData }) => {
     setPanelVisibility(!panelVisibility);
   };
 
+  useEffect(() => {
+    const sidePanel = document.querySelector(".side-panel");
+
+    if (panelVisibility) {
+      sidePanel?.classList.replace("hide", "show");
+    } else {
+      sidePanel?.classList.replace("show", "hide");
+    }
+  }, [panelVisibility]);
+
   return (
-    <div className={`side-panel ${panelVisibility ? "show" : "hide"}`}>
+    <div className={"side-panel show"}>
       <div id="panel-move" onClick={handlePanelMove}>
         {"<<<"}
       </div>

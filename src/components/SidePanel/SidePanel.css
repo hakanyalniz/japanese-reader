@@ -5,6 +5,9 @@
 .side-panel {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+
+  overflow-y: auto;
 
   position: fixed;
   right: 0;
@@ -20,4 +23,18 @@
 
 .side-panel.show {
   transform: translateX(0);
+}
+
+.kanji-def {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.kanji-def .kanji-info {
+  font-size: 50px;
+}
+
+.kanji-card {
+  margin-top: 20px;
 }

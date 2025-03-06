@@ -50,12 +50,7 @@ export const handleFileInput = (
 // Fetch data from Flask
 export const handleDataFetching = (
   setDictionaryData: React.Dispatch<
-    React.SetStateAction<
-      | {
-          [key: string]: unknown;
-        }[]
-      | null
-    >
+    React.SetStateAction<DictionaryItem[] | null>
   >,
   params: Record<string, string> // Accept multiple parameters as an object
 ) => {
@@ -64,7 +59,6 @@ export const handleDataFetching = (
       params,
     })
     .then((response) => {
-      console.log("Data from Flask:", response.data);
       setDictionaryData(response.data);
     })
     .catch((error) => {
@@ -72,21 +66,21 @@ export const handleDataFetching = (
     });
 };
 
+interface DictionaryItem {
+  kanji: string;
+  kana: string;
+  meaning: string;
+}
+
 interface loopSearchDictInterface {
   (
-    dictionaryData: {
-      [key: string]: unknown;
-    }[],
+    dictionaryData: DictionaryItem[],
     clickedQuery: React.RefObject<string | null>,
     clickedQuerySentence: React.RefObject<string | null>,
     setFoundDictionaryData: React.Dispatch<
-      React.SetStateAction<
-        {
-          [key: string]: unknown;
-        }[]
-      >
+      React.SetStateAction<DictionaryItem[]>
     >
-  ): { [key: string]: unknown }[];
+  ): DictionaryItem[];
 }
 // Then, search for the next character in the query
 // look at the kanji field and see if the rest of the query is there
@@ -116,7 +110,7 @@ export const loopSearchDict: loopSearchDictInterface = (
   // const endIndex = clickedQuerySentence.current.length;
   const endIndex = startIndex + 5;
 
-  const result: { [key: string]: unknown }[] = [];
+  const result: DictionaryItem[] = [];
   let currentWordBeingSearched = "";
 
   for (let x = 0; x < dictionaryData.length; x++) {

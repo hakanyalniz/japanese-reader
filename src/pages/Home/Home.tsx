@@ -16,14 +16,20 @@ import {
   handleAddEbook,
 } from "./helpers";
 
+interface DictionaryItem {
+  kanji: string;
+  kana: string;
+  meaning: string;
+}
+
 function Home() {
   const [isEpubDisplayed, setIsEpubDisplayed] = useState(false); // Track if EPUB is being displayed
-  const [dictionaryData, setDictionaryData] = useState<
-    { [key: string]: unknown }[] | null
-  >([]); // Store the fetched dictionary data
+  const [dictionaryData, setDictionaryData] = useState<DictionaryItem[] | null>(
+    []
+  ); // Store the fetched dictionary data
   // When we find the query inside the dictionary data, store them here
   const [foundDictionaryData, setFoundDictionaryData] = useState<
-    { [key: string]: unknown }[]
+    DictionaryItem[]
   >([]);
 
   const clickedQuerySentence = useRef<string | null>(null); // Ref for the clicked text for searching
@@ -112,7 +118,6 @@ function Home() {
     )
       return;
 
-    console.time("Time Test");
     const loopResults = loopSearchDict(
       dictionaryData,
       clickedQuery,
@@ -120,7 +125,6 @@ function Home() {
       setFoundDictionaryData
     );
     setFoundDictionaryData((prevList) => [...prevList, ...loopResults]);
-    console.timeEnd("Time Test");
   }, [dictionaryData]);
 
   useEffect(
@@ -189,7 +193,7 @@ function Home() {
         <div id="viewer" ref={viewerRef}></div>
       </div>
 
-      <SidePanel />
+      <SidePanel foundDictionaryData={foundDictionaryData} />
     </div>
   );
 }

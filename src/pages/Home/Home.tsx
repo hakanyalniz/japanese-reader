@@ -27,6 +27,7 @@ function Home() {
   const [dictionaryData, setDictionaryData] = useState<DictionaryItem[] | null>(
     []
   ); // Store the fetched dictionary data
+
   // When we find the query inside the dictionary data, store them here
   const [foundDictionaryData, setFoundDictionaryData] = useState<
     DictionaryItem[]
@@ -126,11 +127,6 @@ function Home() {
     );
     setFoundDictionaryData((prevList) => [...prevList, ...loopResults]);
   }, [dictionaryData]);
-
-  useEffect(
-    () => console.log("foundDictionaryData", foundDictionaryData),
-    [foundDictionaryData]
-  );
 
   return (
     <div className="home-flex">

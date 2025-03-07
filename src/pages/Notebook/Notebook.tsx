@@ -1,10 +1,26 @@
-import { useSelector } from "react-redux";
-import { selectDictionaryHistory } from "../../store/slices/fileSlices";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectDictionaryHistory,
+  deleteDictionaryHistory,
+} from "../../store/slices/fileSlices";
 
 import "./Notebook.css";
+import { useEffect } from "react";
+
+// Define a Type for the table row data
 
 function Notebook() {
   const dictionaryHistory = useSelector(selectDictionaryHistory);
+  const dispatch = useDispatch();
+
+  // Function to handle row deletion
+  const handleDelete = (kanji) => {
+    dispatch(deleteDictionaryHistory(kanji)); // Dispatch the action with the row id
+  };
+
+  useEffect(() => {
+    console.log(dictionaryHistory);
+  }, [dictionaryHistory]);
 
   return (
     <div>
@@ -26,7 +42,12 @@ function Notebook() {
                   <td> {item["meaning"]}</td>
                   <td>
                     <button className="table-btn">Edit</button>
-                    <button className="table-btn">Delete</button>
+                    <button
+                      onClick={() => handleDelete(item["kanji"])}
+                      className="table-btn"
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               );

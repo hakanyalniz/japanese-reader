@@ -1,5 +1,7 @@
 import "./SidePanel.css";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { setDictionaryHistory } from "../../store/slices/fileSlices";
 
 interface ChildProps {
   foundDictionaryData: {
@@ -11,6 +13,8 @@ interface ChildProps {
 
 const SidePanel: React.FC<ChildProps> = ({ foundDictionaryData }) => {
   const [panelVisibility, setPanelVisibility] = useState(true);
+
+  const dispatch = useDispatch();
 
   const handlePanelMove = () => {
     setPanelVisibility(!panelVisibility);
@@ -38,6 +42,9 @@ const SidePanel: React.FC<ChildProps> = ({ foundDictionaryData }) => {
               <div className="kanji-info">{item["kanji"]}</div>
               <div className="kana-info">{item["kana"]}</div>
               <div className="meaning-info">{item["meaning"]}</div>
+              <button onClick={() => dispatch(setDictionaryHistory(item))}>
+                Add
+              </button>
             </div>
           );
         })}

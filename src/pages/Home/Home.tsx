@@ -16,7 +16,7 @@ import {
   handleAddEbook,
 } from "./helpers";
 
-interface DictionaryItem {
+export interface DictionaryItem {
   kanji: string;
   kana: string;
   meaning: string;

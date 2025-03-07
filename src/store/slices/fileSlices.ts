@@ -1,11 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { DictionaryItem } from "../../pages/Home/Home";
 
 interface FileState {
-  dictionaryHistory: {
-    kanji: string;
-    kana: string;
-    meaning: string;
-  }[];
+  dictionaryHistory: DictionaryItem[];
 }
 
 const initialState: FileState = {
@@ -29,5 +26,5 @@ export default fileSlice.reducer;
 
 //Selectors
 export const selectDictionaryHistory = (state: {
-  fileHistory: { dictionaryHistory: unknown };
+  fileHistory: { dictionaryHistory: DictionaryItem[] };
 }) => state.fileHistory.dictionaryHistory;

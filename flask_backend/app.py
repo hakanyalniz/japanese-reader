@@ -20,7 +20,7 @@ def get_data():
     conn = get_db_connection()
     value = request.args.get('query')
 
-    cursor = conn.execute("SELECT kanji, kana, meaning FROM jpn_dict WHERE kanji LIKE ? ORDER BY LENGTH(kanji) ASC", (f"{value}%",))
+    cursor = conn.execute("SELECT id, kanji, kana, meaning FROM jpn_dict WHERE kanji LIKE ? ORDER BY LENGTH(kanji) ASC", (f"{value}%",))
     rows = cursor.fetchall()
 
     result = [dict(row) for row in rows]

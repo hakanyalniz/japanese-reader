@@ -7,15 +7,13 @@ import {
 import "./Notebook.css";
 import { useEffect } from "react";
 
-// Define a Type for the table row data
-
 function Notebook() {
   const dictionaryHistory = useSelector(selectDictionaryHistory);
   const dispatch = useDispatch();
 
   // Function to handle row deletion
-  const handleDelete = (kanji) => {
-    dispatch(deleteDictionaryHistory(kanji)); // Dispatch the action with the row id
+  const handleDelete = (id: number) => {
+    dispatch(deleteDictionaryHistory(id)); // Dispatch the action with the row id
   };
 
   useEffect(() => {
@@ -43,7 +41,7 @@ function Notebook() {
                   <td>
                     <button className="table-btn">Edit</button>
                     <button
-                      onClick={() => handleDelete(item["kanji"])}
+                      onClick={() => handleDelete(item["id"])}
                       className="table-btn"
                     >
                       Delete
@@ -60,3 +58,12 @@ function Notebook() {
 }
 
 export default Notebook;
+
+// Create an example field alongside other kanji entries
+// Persist the epub after it has been loaded
+// when user clicks to upload epub get the input as state
+// if they click remove book, clear the state, if not, when they come back to main from other page
+// run the show epub function again from the state
+
+// either take function from helper to main to run the states on it, since it cant run if not inside component
+// or make the function return the user input

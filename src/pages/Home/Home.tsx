@@ -17,6 +17,7 @@ import {
 } from "./helpers";
 
 export interface DictionaryItem {
+  id: number;
   kanji: string;
   kana: string;
   meaning: string;

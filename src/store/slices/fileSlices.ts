@@ -15,11 +15,20 @@ const fileSlice = createSlice({
   initialState,
   reducers: {
     addDictionaryHistory: (state, action) => {
+      // If an item is already in the notebook, do not add it
+      // confirm this via checking id
+      if (
+        state.dictionaryHistory.some(
+          (item) => Reflect.get(item, "id") === action.payload.id
+        )
+      ) {
+        return;
+      }
       state.dictionaryHistory.push(action.payload);
     },
     deleteDictionaryHistory: (state, action) => {
       state.dictionaryHistory = state.dictionaryHistory.filter((row) => {
-        return row.kanji !== action.payload;
+        return row.id !== action.payload;
       });
     },
   },

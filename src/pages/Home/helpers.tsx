@@ -1,5 +1,6 @@
 import ePub, { Rendition } from "epubjs";
 import axios from "axios";
+import { DictionaryItem } from "./Home";
 
 // When file input changes display the epub file
 export const handleFileInput = (
@@ -65,12 +66,6 @@ export const handleDataFetching = (
       console.error("Error fetching data from Flask:", error);
     });
 };
-
-interface DictionaryItem {
-  kanji: string;
-  kana: string;
-  meaning: string;
-}
 
 interface loopSearchDictInterface {
   (

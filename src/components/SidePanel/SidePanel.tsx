@@ -1,7 +1,7 @@
 import "./SidePanel.css";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { setDictionaryHistory } from "../../store/slices/fileSlices";
+import { addDictionaryHistory } from "../../store/slices/fileSlices";
 
 interface ChildProps {
   foundDictionaryData: {
@@ -42,7 +42,7 @@ const SidePanel: React.FC<ChildProps> = ({ foundDictionaryData }) => {
               <div className="kanji-info">{item["kanji"]}</div>
               <div className="kana-info">{item["kana"]}</div>
               <div className="meaning-info">{item["meaning"]}</div>
-              <button onClick={() => dispatch(setDictionaryHistory(item))}>
+              <button onClick={() => dispatch(addDictionaryHistory(item))}>
                 Add
               </button>
             </div>

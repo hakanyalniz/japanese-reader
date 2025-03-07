@@ -1,6 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+interface FileState {
+  dictionaryHistory: {
+    kanji: string;
+    kana: string;
+    meaning: string;
+  }[];
+}
+
+const initialState: FileState = {
   dictionaryHistory: [],
 };
 
@@ -9,14 +17,14 @@ const fileSlice = createSlice({
   name: "fileHistory",
   initialState,
   reducers: {
-    setDictionaryHistory: (state, action) => {
-      state.dictionaryHistory += action.payload;
+    addDictionaryHistory: (state, action) => {
+      state.dictionaryHistory.push(action.payload);
     },
   },
 });
 
 // Action
-export const { setDictionaryHistory } = fileSlice.actions;
+export const { addDictionaryHistory } = fileSlice.actions;
 export default fileSlice.reducer;
 
 //Selectors

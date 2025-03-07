@@ -9,7 +9,7 @@
 
   position: fixed;
   right: 0;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 55px);
   width: 300px;
   background-color: rgb(15, 15, 15);
   transition: transform 0.3s ease;

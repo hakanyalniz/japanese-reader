@@ -30,6 +30,14 @@ export interface DictionaryItem {
   meaning: string;
 }
 
+export interface fileMetaData {
+  name: string;
+  type: string;
+  size: number;
+  lastModified: number;
+  data: string;
+}
+
 function Home() {
   const [currentRendition, setCurrentRendition] = useState<Rendition | null>(
     null
@@ -138,32 +146,8 @@ function Home() {
     setFoundDictionaryData((prevList) => [...prevList, ...loopResults]);
   }, [dictionaryData]);
 
-  // useEffect(() => {
-  //   if (!currentlyDisplayedEpub) return;
-
-  //   const reader = new FileReader();
-  //   reader.readAsArrayBuffer(currentlyDisplayedEpub);
-
-  //   console.log("currentlyDisplayedEpub", currentlyDisplayedEpub);
-  //   const createBlobUrl = (file: File): string =>
-  //     URL.createObjectURL(currentlyDisplayedEpub);
-  //   const reloadFile = (blobUrl: string): File => {
-  //     return new File([blobUrl], "filename.epub", {
-  //       type: "application/epub+zip",
-  //     });
-  //   };
-  //   let file = createBlobUrl(currentlyDisplayedEpub);
-  //   console.log("createBlobUrl", reloadFile(file));
-
-  //   handleFileInput(
-  //     setCurrentRendition,
-  //     viewerRef,
-  //     setIsEpubDisplayed,
-  //     undefined,
-  //     currentlyDisplayedEpub
-  //   );
-  // }, [currentlyDisplayedEpub]);
-
+  // When the page is reloaded, run handleFileInput with the metadata we extracted
+  // it will reconstruct as a file in the other side
   useEffect(() => {
     if (!currentlyDisplayedEpub) return;
 
@@ -175,10 +159,6 @@ function Home() {
       currentlyDisplayedEpub
     );
   }, [currentlyDisplayedEpub]);
-
-  // useEffect(() => {
-  //   console.log("currentlyDisplayedEpub", currentlyDisplayedEpub);
-  // }, [currentlyDisplayedEpub]);
 
   return (
     <div className="home-flex">
@@ -229,7 +209,8 @@ function Home() {
                 accept=".epub"
                 ref={fileInputRef}
                 onChange={(e) => {
-                  // take the return of file, so we can use it to reload the page when needed
+                  // take the return of file, extract metadata, we can then reconstruct the file to reload the epub
+                  // Store the metadata in redux, so it stays there even in reload
                   let metaData;
 
                   storeFileMetaData(
@@ -239,7 +220,7 @@ function Home() {
                       setIsEpubDisplayed,
                       e
                     )
-                  ).then((fileMetadata) => {
+                  )?.then((fileMetadata) => {
                     metaData = fileMetadata;
                     dispatch(setCurrentlyDisplayedEpub(metaData));
                   });

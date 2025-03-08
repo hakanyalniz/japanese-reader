@@ -43,3 +43,29 @@ useEffect(() => {
     observer.observe(parentElement, { childList: true, subtree: true });
   }
 }, [currentRendition]);
+
+useEffect(() => {
+  if (!currentlyDisplayedEpub) return;
+
+  const reader = new FileReader();
+  reader.readAsArrayBuffer(currentlyDisplayedEpub);
+
+  console.log("currentlyDisplayedEpub", currentlyDisplayedEpub);
+  const createBlobUrl = (file: File): string =>
+    URL.createObjectURL(currentlyDisplayedEpub);
+  const reloadFile = (blobUrl: string): File => {
+    return new File([blobUrl], "filename.epub", {
+      type: "application/epub+zip",
+    });
+  };
+  let file = createBlobUrl(currentlyDisplayedEpub);
+  console.log("createBlobUrl", reloadFile(file));
+
+  handleFileInput(
+    setCurrentRendition,
+    viewerRef,
+    setIsEpubDisplayed,
+    undefined,
+    currentlyDisplayedEpub
+  );
+}, [currentlyDisplayedEpub]);

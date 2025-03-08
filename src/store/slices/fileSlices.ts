@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { DictionaryItem } from "../../pages/Home/Home";
+import { DictionaryItem, fileMetaData } from "../../pages/Home/Home";
 
 interface FileState {
   dictionaryHistory: DictionaryItem[];
-  currentlyDisplayedEpub: File | null;
+  currentlyDisplayedEpub: fileMetaData | null;
 }
 
 const initialState: FileState = {
@@ -53,5 +53,5 @@ export const selectDictionaryHistory = (state: {
 }) => state.fileHistory.dictionaryHistory;
 
 export const selectCurrentlyDisplayedEpub = (state: {
-  fileHistory: { currentlyDisplayedEpub: File };
+  fileHistory: { currentlyDisplayedEpub: fileMetaData };
 }) => state.fileHistory.currentlyDisplayedEpub;

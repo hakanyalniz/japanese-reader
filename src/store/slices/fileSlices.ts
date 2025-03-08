@@ -3,10 +3,12 @@ import { DictionaryItem } from "../../pages/Home/Home";
 
 interface FileState {
   dictionaryHistory: DictionaryItem[];
+  currentlyDisplayedEpub: File | null;
 }
 
 const initialState: FileState = {
   dictionaryHistory: [],
+  currentlyDisplayedEpub: null,
 };
 
 // Slice, Reducers
@@ -31,15 +33,25 @@ const fileSlice = createSlice({
         return row.id !== action.payload;
       });
     },
+    setCurrentlyDisplayedEpub: (state, action) => {
+      state.currentlyDisplayedEpub = action.payload;
+    },
   },
 });
 
 // Action
-export const { addDictionaryHistory, deleteDictionaryHistory } =
-  fileSlice.actions;
+export const {
+  addDictionaryHistory,
+  deleteDictionaryHistory,
+  setCurrentlyDisplayedEpub,
+} = fileSlice.actions;
 export default fileSlice.reducer;
 
 //Selectors
 export const selectDictionaryHistory = (state: {
   fileHistory: { dictionaryHistory: DictionaryItem[] };
 }) => state.fileHistory.dictionaryHistory;
+
+export const selectCurrentlyDisplayedEpub = (state: {
+  fileHistory: { currentlyDisplayedEpub: File };
+}) => state.fileHistory.currentlyDisplayedEpub;

@@ -4,6 +4,12 @@ import { Rendition } from "epubjs";
 import { useState, useRef, useEffect } from "react";
 
 import {
+  setCurrentlyDisplayedEpub,
+  selectCurrentlyDisplayedEpub,
+} from "../../store/slices/fileSlices";
+import { useDispatch, useSelector } from "react-redux";
+
+import {
   handleFileInput,
   handleDataFetching,
   loopSearchDict,
@@ -14,6 +20,7 @@ import {
   handleKeyDown,
   handleIFrameKey,
   handleAddEbook,
+  storeFileMetaData,
 } from "./helpers";
 
 export interface DictionaryItem {
@@ -24,6 +31,9 @@ export interface DictionaryItem {
 }
 
 function Home() {
+  const [currentRendition, setCurrentRendition] = useState<Rendition | null>(
+    null
+  );
   const [isEpubDisplayed, setIsEpubDisplayed] = useState(false); // Track if EPUB is being displayed
   const [dictionaryData, setDictionaryData] = useState<DictionaryItem[] | null>(
     []
@@ -40,9 +50,8 @@ function Home() {
   const fileInputRef = useRef<HTMLInputElement>(null); // Ref for the file input
   const viewerRef = useRef<HTMLDivElement>(null); // Ref for the viewer container
 
-  const [currentRendition, setCurrentRendition] = useState<Rendition | null>(
-    null
-  );
+  const currentlyDisplayedEpub = useSelector(selectCurrentlyDisplayedEpub);
+  const dispatch = useDispatch();
 
   // Resize the epub font to make it responsive
   useEffect(() => {
@@ -129,6 +138,48 @@ function Home() {
     setFoundDictionaryData((prevList) => [...prevList, ...loopResults]);
   }, [dictionaryData]);
 
+  // useEffect(() => {
+  //   if (!currentlyDisplayedEpub) return;
+
+  //   const reader = new FileReader();
+  //   reader.readAsArrayBuffer(currentlyDisplayedEpub);
+
+  //   console.log("currentlyDisplayedEpub", currentlyDisplayedEpub);
+  //   const createBlobUrl = (file: File): string =>
+  //     URL.createObjectURL(currentlyDisplayedEpub);
+  //   const reloadFile = (blobUrl: string): File => {
+  //     return new File([blobUrl], "filename.epub", {
+  //       type: "application/epub+zip",
+  //     });
+  //   };
+  //   let file = createBlobUrl(currentlyDisplayedEpub);
+  //   console.log("createBlobUrl", reloadFile(file));
+
+  //   handleFileInput(
+  //     setCurrentRendition,
+  //     viewerRef,
+  //     setIsEpubDisplayed,
+  //     undefined,
+  //     currentlyDisplayedEpub
+  //   );
+  // }, [currentlyDisplayedEpub]);
+
+  useEffect(() => {
+    if (!currentlyDisplayedEpub) return;
+
+    handleFileInput(
+      setCurrentRendition,
+      viewerRef,
+      setIsEpubDisplayed,
+      undefined,
+      currentlyDisplayedEpub
+    );
+  }, [currentlyDisplayedEpub]);
+
+  // useEffect(() => {
+  //   console.log("currentlyDisplayedEpub", currentlyDisplayedEpub);
+  // }, [currentlyDisplayedEpub]);
+
   return (
     <div className="home-flex">
       <div className="container">
@@ -177,14 +228,22 @@ function Home() {
                 id="fileInput"
                 accept=".epub"
                 ref={fileInputRef}
-                onChange={(e) =>
-                  handleFileInput(
-                    e,
-                    setCurrentRendition,
-                    viewerRef,
-                    setIsEpubDisplayed
-                  )
-                }
+                onChange={(e) => {
+                  // take the return of file, so we can use it to reload the page when needed
+                  let metaData;
+
+                  storeFileMetaData(
+                    handleFileInput(
+                      setCurrentRendition,
+                      viewerRef,
+                      setIsEpubDisplayed,
+                      e
+                    )
+                  ).then((fileMetadata) => {
+                    metaData = fileMetadata;
+                    dispatch(setCurrentlyDisplayedEpub(metaData));
+                  });
+                }}
                 style={{ display: "none" }} // Hides the input element but keeps it accessible
               />
             </div>

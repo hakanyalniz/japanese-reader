@@ -2,15 +2,64 @@ import ePub, { Rendition } from "epubjs";
 import axios from "axios";
 import { DictionaryItem } from "./Home";
 
+export const storeFileMetaData = (file) => {
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader();
+
+    fileReader.onload = () => {
+      const base64 = fileReader.result; // File data as base64
+
+      const fileMetadata = {
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        lastModified: file.lastModified,
+        data: base64, // Store the file's data
+      };
+
+      resolve(fileMetadata); // Resolve the promise with the metadata
+    };
+
+    fileReader.onerror = (error) => {
+      reject(error); // Reject the promise if there's an error
+    };
+
+    fileReader.readAsDataURL(file); // Read the file as base64
+  });
+};
+
+const base64ToFile = (base64, name, type, lastModified) => {
+  const base64Data = base64.split(",")[1]; // Remove the data URL prefix
+  const binaryString = atob(base64Data); // Convert base64 to binary string
+  const byteArray = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    byteArray[i] = binaryString.charCodeAt(i);
+  }
+  const blob = new Blob([byteArray], { type });
+  return new File([blob], name, { type, lastModified });
+};
+
 // When file input changes display the epub file
 export const handleFileInput = (
-  event: React.ChangeEvent<HTMLInputElement>,
   setCurrentRendition: React.Dispatch<React.SetStateAction<Rendition | null>>,
   viewerRef: React.RefObject<HTMLDivElement | null>,
-  setIsEpubDisplayed: React.Dispatch<React.SetStateAction<boolean>>
+  setIsEpubDisplayed: React.Dispatch<React.SetStateAction<boolean>>,
+  event?: React.ChangeEvent<HTMLInputElement>,
+  currentlyDisplayedEpub?: File
 ) => {
-  const file = event.target.files?.[0];
-
+  let file;
+  console.log("what is currentlyDisplayedEpub", currentlyDisplayedEpub);
+  if (currentlyDisplayedEpub) {
+    file = base64ToFile(
+      currentlyDisplayedEpub.data,
+      currentlyDisplayedEpub.name,
+      currentlyDisplayedEpub.type,
+      currentlyDisplayedEpub.lastModified
+    );
+  } else if (event?.target) {
+    file = event.target.files?.[0];
+  }
+  console.log("file", file);
   if (file && file.type === "application/epub+zip") {
     const reader = new FileReader();
 
@@ -42,7 +91,9 @@ export const handleFileInput = (
       }
     };
 
-    reader.readAsArrayBuffer(file); // Read the EPUB file as an ArrayBuffer
+    reader.readAsArrayBuffer(file);
+
+    return file;
   } else {
     alert("Please upload a valid EPUB file.");
   }

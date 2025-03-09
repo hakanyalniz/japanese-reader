@@ -5,7 +5,6 @@ import {
 } from "../../store/slices/fileSlices";
 
 import "./Notebook.css";
-import { useEffect } from "react";
 
 function Notebook() {
   const dictionaryHistory = useSelector(selectDictionaryHistory);
@@ -15,10 +14,6 @@ function Notebook() {
   const handleDelete = (id: number) => {
     dispatch(deleteDictionaryHistory(id)); // Dispatch the action with the row id
   };
-
-  useEffect(() => {
-    console.log(dictionaryHistory);
-  }, [dictionaryHistory]);
 
   return (
     <div>

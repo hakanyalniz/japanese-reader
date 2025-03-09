@@ -55,6 +55,8 @@ function Home() {
   const clickedQuerySentence = useRef<string | null>(null); // Ref for the clicked text for searching
   const clickedQuery = useRef<string>(null);
 
+  const hasInitializedRef = useRef(false);
+
   const fileInputRef = useRef<HTMLInputElement>(null); // Ref for the file input
   const viewerRef = useRef<HTMLDivElement>(null); // Ref for the viewer container
 
@@ -149,7 +151,15 @@ function Home() {
   // When the page is reloaded, run handleFileInput with the metadata we extracted
   // it will reconstruct as a file in the other side
   useEffect(() => {
-    if (!currentlyDisplayedEpub) return;
+    if (
+      hasInitializedRef.current ||
+      !currentlyDisplayedEpub ||
+      !viewerRef.current ||
+      isEpubDisplayed
+    )
+      return;
+
+    hasInitializedRef.current = true;
 
     handleFileInput(
       setCurrentRendition,
@@ -158,7 +168,7 @@ function Home() {
       undefined,
       currentlyDisplayedEpub
     );
-  }, [currentlyDisplayedEpub]);
+  }, [currentlyDisplayedEpub, isEpubDisplayed]);
 
   return (
     <div className="home-flex">
@@ -183,13 +193,14 @@ function Home() {
           {isEpubDisplayed && (
             <button
               className="nav-button"
-              onClick={() =>
+              onClick={() => {
+                dispatch(setCurrentlyDisplayedEpub(null));
                 handleRemoveEbook(
                   setFoundDictionaryData,
                   currentRendition,
                   setIsEpubDisplayed
-                )
-              }
+                );
+              }}
             >
               Remove Ebook
             </button>

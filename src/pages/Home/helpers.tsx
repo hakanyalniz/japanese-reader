@@ -399,3 +399,70 @@ export const swipeEndHandler = (
     }
   }
 };
+
+// Add cards to Anki
+// Function to check if the deck exists
+async function deckExists(deckName) {
+  const response = await invokeAnkiConnect("deckNames");
+  return response.includes(deckName);
+}
+
+// Function to create a deck (if it doesn't exist)
+async function createDeckIfNotExists(deckName) {
+  const exists = await deckExists(deckName);
+
+  if (!exists) {
+    const response = await invokeAnkiConnect("createDeck", {
+      deck: deckName,
+    });
+    console.log(`Deck "${deckName}" created.`);
+  } else {
+    console.log(`Deck "${deckName}" already exists.`);
+  }
+}
+
+// Function to add cards to the deck
+export async function addCardToDeck(deckName, front, back) {
+  // First, ensure the deck exists
+  await createDeckIfNotExists(deckName);
+
+  // Add the card
+  const note = {
+    deckName: deckName,
+    modelName: "Basic", // You can choose a different model if needed
+    fields: {
+      Front: `<h1>${front}</h1>
+      <br/>
+      <br/>
+      <p style="visibility:hidden">${back.id}</p>`,
+      Back: `<p>Kana: ${back.kana}</p><p>Meaning: ${back.meaning}</p>`,
+    },
+    tags: ["kanji"], // Optional: add tags if needed
+  };
+
+  const response = await invokeAnkiConnect("addNote", { note });
+  console.log(response);
+}
+
+async function invokeAnkiConnect(action, params = {}) {
+  try {
+    const response = await fetch("http://localhost:8765", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ action, version: 6, params }),
+    });
+
+    // Check if the response is OK (status code 2xx)
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result.result;
+  } catch (error) {
+    console.error("An error occurred:", error);
+    throw error; // Optionally rethrow or handle error
+  }
+}

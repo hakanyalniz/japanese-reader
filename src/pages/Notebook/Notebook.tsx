@@ -4,6 +4,8 @@ import {
   deleteDictionaryHistory,
 } from "../../store/slices/fileSlices";
 
+import { addCardToDeck } from "../Home/helpers";
+
 import "./Notebook.css";
 
 function Notebook() {
@@ -15,6 +17,12 @@ function Notebook() {
     dispatch(deleteDictionaryHistory(id)); // Dispatch the action with the row id
   };
 
+  const handleAddToAnki = () => {
+    dictionaryHistory.map((card) => {
+      addCardToDeck("Epub Reader", card.kanji, card);
+    });
+  };
+
   return (
     <div>
       <div className="table-container">
@@ -24,6 +32,9 @@ function Notebook() {
               <th>KANJI</th>
               <th>KANA</th>
               <th>MEANING</th>
+              <td className="add-anki" onClick={handleAddToAnki}>
+                <button className="nav-button">Add To Anki</button>
+              </td>
             </tr>
           </thead>
           <tbody>

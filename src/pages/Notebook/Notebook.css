@@ -36,3 +36,7 @@
 .table-btn:hover {
   background-color: rgb(99, 99, 99);
 }
+
+.kanji-table .add-anki {
+  text-align: center;
+}

@@ -33,3 +33,14 @@ declare interface getClickedKanjiInterface {
     >
   ): void;
 }
+
+declare interface loopSearchDictInterface {
+  (
+    dictionaryData: DictionaryItem[],
+    clickedQuery: React.RefObject<string | null>,
+    clickedQuerySentence: React.RefObject<string | null>,
+    setFoundDictionaryData: React.Dispatch<
+      React.SetStateAction<DictionaryItem[]>
+    >
+  ): DictionaryItem[];
+}

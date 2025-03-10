@@ -21,6 +21,8 @@ import {
   handleIFrameKey,
   handleAddEbook,
   storeFileMetaData,
+  swipeStartHandler,
+  swipeEndHandler,
 } from "./helpers";
 
 function Home() {
@@ -106,6 +108,23 @@ function Home() {
     );
     setFoundDictionaryData((prevList) => [...prevList, ...loopResults]);
   }, [dictionaryData]);
+
+  // Detech swipes, both mouse and touchscreen
+  useEffect(() => {
+    currentRendition?.on("touchstart", (event: TouchEvent) =>
+      swipeStartHandler(event)
+    );
+    currentRendition?.on("touchend", (event: TouchEvent) =>
+      swipeEndHandler(event, currentRendition)
+    );
+
+    currentRendition?.on("mousedown", (event: MouseEvent) =>
+      swipeStartHandler(event)
+    );
+    currentRendition?.on("mouseup", (event: MouseEvent) =>
+      swipeEndHandler(event, currentRendition)
+    );
+  }, [currentRendition]);
 
   // When the page is reloaded, run handleFileInput with the metadata we extracted
   // it will reconstruct as a file in the other side

@@ -161,16 +161,6 @@ export const handleDataFetching = (
     });
 };
 
-interface loopSearchDictInterface {
-  (
-    dictionaryData: DictionaryItem[],
-    clickedQuery: React.RefObject<string | null>,
-    clickedQuerySentence: React.RefObject<string | null>,
-    setFoundDictionaryData: React.Dispatch<
-      React.SetStateAction<DictionaryItem[]>
-    >
-  ): DictionaryItem[];
-}
 // Then, search for the next character in the query
 // look at the kanji field and see if the rest of the query is there
 // 引きこもり;
@@ -364,4 +354,48 @@ export const handleIFrameKey = (currentRendition: Rendition | null) => {
 // Clicking the button will click the hidden file input
 export const handleAddEbook = () => {
   document.getElementById("fileInput")?.click();
+};
+
+let startX = 0;
+let startY = 0;
+let endX = 0;
+let endY = 0;
+
+const threshold = 50; // Minimum distance to be considered a swipe (in pixels)
+
+export const swipeStartHandler = (event: MouseEvent | TouchEvent) => {
+  if (event.type == "mousedown") {
+    startX = event.pageX;
+    startY = event.pageY;
+  } else {
+    const touch = event.touches[0];
+    startX = touch.pageX;
+    startY = touch.pageY;
+  }
+};
+
+export const swipeEndHandler = (
+  event: MouseEvent | TouchEvent,
+  currentRendition: Rendition
+) => {
+  if (event.type == "mouseup") {
+    endX = event.pageX;
+    endY = event.pageY;
+  } else {
+    const touch = event.changedTouches[0];
+    endX = touch.pageX;
+    endY = touch.pageY;
+  }
+
+  const deltaX = endX - startX;
+  const deltaY = endY - startY;
+
+  if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > threshold) {
+    // Horizontal swipe
+    if (deltaX > 0) {
+      currentRendition.prev();
+    } else {
+      currentRendition.next();
+    }
+  }
 };

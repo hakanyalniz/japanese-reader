@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import {
   handleFileInput,
-  handleDataFetching,
+  getClickedKanji,
   loopSearchDict,
   handleResize,
   handleNextPage,
@@ -80,38 +80,12 @@ function Home() {
 
   // get the kanji that the user clicked on
   useEffect(() => {
-    currentRendition?.on("click", () => {
-      const iframe = document.querySelector("iframe");
-      if (!iframe) return;
-
-      // Access the iframe's document
-      const iframeDoc =
-        iframe.contentDocument || iframe.contentWindow?.document;
-      if (!iframeDoc) return;
-
-      // Get the selection within the iframe
-      const selection = iframeDoc.getSelection();
-      if (selection && selection.rangeCount > 0) {
-        const range = selection.getRangeAt(0);
-        const { startContainer, startOffset } = range;
-
-        // Ensure the clicked target is a text node
-        if (startContainer.nodeType === Node.TEXT_NODE) {
-          const clickedCharacter = startContainer.textContent?.[startOffset];
-          console.log(startContainer.textContent);
-          clickedQuerySentence.current = startContainer.textContent;
-
-          if (clickedCharacter) {
-            console.log(clickedCharacter);
-            clickedQuery.current = clickedCharacter;
-
-            handleDataFetching(setDictionaryData, {
-              query: clickedCharacter,
-            });
-          }
-        }
-      }
-    });
+    getClickedKanji(
+      currentRendition,
+      clickedQuery,
+      clickedQuerySentence,
+      setDictionaryData
+    );
   }, [currentRendition]);
 
   // When new dictionary data comes, it means something new was clicked

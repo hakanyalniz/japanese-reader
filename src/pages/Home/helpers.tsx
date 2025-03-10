@@ -44,16 +44,6 @@ const base64ToFile = (
   return new File([blob], name, { type, lastModified });
 };
 
-interface handleFileInputInterface {
-  (
-    setCurrentRendition: React.Dispatch<React.SetStateAction<Rendition | null>>,
-    viewerRef: React.RefObject<HTMLDivElement | null>,
-    setIsEpubDisplayed: React.Dispatch<React.SetStateAction<boolean>>,
-    event?: React.ChangeEvent<HTMLInputElement>,
-    currentlyDisplayedEpub?: fileMetaData
-  ): File | undefined;
-}
-
 // When file input changes display the epub file
 export const handleFileInput: handleFileInputInterface = (
   setCurrentRendition,
@@ -111,6 +101,45 @@ export const handleFileInput: handleFileInputInterface = (
   } else {
     alert("Please upload a valid EPUB file.");
   }
+};
+
+export const getClickedKanji: getClickedKanjiInterface = (
+  currentRendition,
+  clickedQuery,
+  clickedQuerySentence,
+  setDictionaryData
+) => {
+  currentRendition?.on("click", () => {
+    const iframe = document.querySelector("iframe");
+    if (!iframe) return;
+
+    // Access the iframe's document
+    const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+    if (!iframeDoc) return;
+
+    // Get the selection within the iframe
+    const selection = iframeDoc.getSelection();
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      const { startContainer, startOffset } = range;
+
+      // Ensure the clicked target is a text node
+      if (startContainer.nodeType === Node.TEXT_NODE) {
+        const clickedCharacter = startContainer.textContent?.[startOffset];
+        console.log(startContainer.textContent);
+        clickedQuerySentence.current = startContainer.textContent;
+
+        if (clickedCharacter) {
+          console.log(clickedCharacter);
+          clickedQuery.current = clickedCharacter;
+
+          handleDataFetching(setDictionaryData, {
+            query: clickedCharacter,
+          });
+        }
+      }
+    }
+  });
 };
 
 // Fetch data from Flask

@@ -55,10 +55,6 @@ function Notebook() {
 export default Notebook;
 
 // Create an example field alongside other kanji entries
-// Persist the epub after it has been loaded
-// when user clicks to upload epub get the input as state
-// if they click remove book, clear the state, if not, when they come back to main from other page
-// run the show epub function again from the state
-
-// either take function from helper to main to run the states on it, since it cant run if not inside component
-// or make the function return the user input
+// Create seperate file for interface
+// Create seperate page for detailed kanji view
+// Create a dictionary page

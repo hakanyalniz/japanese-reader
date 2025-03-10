@@ -1,6 +1,5 @@
 import ePub, { Rendition } from "epubjs";
 import axios from "axios";
-import { DictionaryItem, fileMetaData } from "./Home";
 
 export const storeFileMetaData = (file: File | undefined) => {
   if (file == undefined) return;

@@ -23,21 +23,6 @@ import {
   storeFileMetaData,
 } from "./helpers";
 
-export interface DictionaryItem {
-  id: number;
-  kanji: string;
-  kana: string;
-  meaning: string;
-}
-
-export interface fileMetaData {
-  name: string;
-  type: string;
-  size: number;
-  lastModified: number;
-  data: string;
-}
-
 function Home() {
   const [currentRendition, setCurrentRendition] = useState<Rendition | null>(
     null

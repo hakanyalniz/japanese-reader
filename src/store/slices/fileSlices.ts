@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { DictionaryItem, fileMetaData } from "../../pages/Home/Home";
 
 interface FileState {
   dictionaryHistory: DictionaryItem[];

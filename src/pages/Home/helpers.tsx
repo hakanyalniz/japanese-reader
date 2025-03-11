@@ -371,6 +371,8 @@ const threshold = 30; // Minimum distance to be considered a swipe (in pixels)
  * Records the current pageX and pageY coordinates through MouseEvent or TouchEvent.
  */
 export const swipeStartHandler = (event: MouseEvent | TouchEvent) => {
+  event.preventDefault();
+
   if (event.type == "mousedown") {
     startX = event.pageX;
   } else {
@@ -386,6 +388,8 @@ export const swipeEndHandler = (
   event: MouseEvent | TouchEvent,
   currentRendition: Rendition
 ) => {
+  event.preventDefault();
+
   if (event.type == "mouseup") {
     endX = event.pageX;
   } else {

@@ -149,35 +149,6 @@ function Home() {
     );
   }, [currentlyDisplayedEpub, isEpubDisplayed]);
 
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-
-  // Handle document-wide clicks
-  useEffect(() => {
-    const handleDocumentClick = (event: {
-      clientX: number;
-      clientY: number;
-    }) => {
-      console.log("test");
-      // Record the position regardless of what was clicked
-      setPosition({
-        x: event.clientX,
-        y: event.clientY,
-      });
-    };
-    console.log("running click");
-
-    // Add listener to the document
-    document.addEventListener("click", handleDocumentClick);
-    // Clean up
-    return () => {
-      document.removeEventListener("click", handleDocumentClick);
-    };
-  }, []);
-
-  useEffect(() => {
-    console.log(position);
-  }, [position]);
-
   return (
     <div className="home-flex">
       <div className="container">

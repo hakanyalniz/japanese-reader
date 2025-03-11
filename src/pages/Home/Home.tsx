@@ -1,4 +1,4 @@
-import SidePanel from "../../components/SidePanel/SidePanel";
+import KanjiBox from "../../components/kanjiBox/KanjiBox";
 import "./Home.css";
 import { Rendition } from "epubjs";
 import { useState, useRef, useEffect } from "react";
@@ -86,7 +86,8 @@ function Home() {
       currentRendition,
       clickedQuery,
       clickedQuerySentence,
-      setDictionaryData
+      setDictionaryData,
+      setFoundDictionaryData
     );
   }, [currentRendition]);
 
@@ -151,6 +152,10 @@ function Home() {
   return (
     <div className="home-flex">
       <div className="container">
+        <KanjiBox
+          currentRendition={currentRendition}
+          foundDictionaryData={foundDictionaryData}
+        />
         <div id="ebook-navigation">
           <button
             className="nav-button"
@@ -222,8 +227,6 @@ function Home() {
 
         <div id="viewer" ref={viewerRef}></div>
       </div>
-
-      <SidePanel foundDictionaryData={foundDictionaryData} />
     </div>
   );
 }

@@ -1,0 +1,31 @@
+#kanji-box {
+  overflow-x: auto;
+  position: absolute;
+  background-color: rgba(27, 27, 27, 0.9);
+  height: 200px;
+  width: 300px;
+  z-index: 1;
+}
+
+/* Hide scrollbar for webkit browsers (Chrome, Safari) */
+#kanji-box::-webkit-scrollbar {
+  display: none;
+}
+
+/* For Firefox */
+#kanji-box {
+  scrollbar-width: none; /* Hides the scrollbar */
+}
+
+.kanji-card .kanji-info {
+  font-size: 30px;
+}
+
+.kanji-info {
+  font-size: 50px;
+}
+
+.kanji-card {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}

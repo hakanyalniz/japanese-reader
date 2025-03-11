@@ -30,6 +30,9 @@ declare interface getClickedKanjiInterface {
     clickedQuerySentence: React.RefObject<string | null>,
     setDictionaryData: React.Dispatch<
       React.SetStateAction<DictionaryItem[] | null>
+    >,
+    setFoundDictionaryData: React.Dispatch<
+      React.SetStateAction<DictionaryItem[]>
     >
   ): void;
 }

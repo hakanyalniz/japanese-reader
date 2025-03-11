@@ -52,3 +52,12 @@
   padding-top: 20px;
   padding-bottom: 20px;
 }
+
+@media (max-width: 900px) {
+  .side-panel {
+    height: 200px;
+    width: 100vw;
+    bottom: 0;
+    right: auto;
+  }
+}

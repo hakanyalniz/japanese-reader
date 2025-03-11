@@ -117,7 +117,8 @@ export const getClickedKanji: getClickedKanjiInterface = (
   currentRendition,
   clickedQuery,
   clickedQuerySentence,
-  setDictionaryData
+  setDictionaryData,
+  setFoundDictionaryData
 ) => {
   currentRendition?.on("click", () => {
     const iframe = document.querySelector("iframe");
@@ -146,6 +147,8 @@ export const getClickedKanji: getClickedKanjiInterface = (
           handleDataFetching(setDictionaryData, {
             query: clickedCharacter,
           });
+        } else {
+          setFoundDictionaryData([]);
         }
       }
     }
@@ -268,39 +271,19 @@ export const handleResize = (currentRendition: Rendition | null) => {
 
   if (!currentRendition || !sidePanel) return;
 
-  // control the side panel
-  // Apply specific class to side panel, which will then change kanji info font
-  if (width <= 1600) {
-    sidePanel.style.width = "200px";
-
-    sidePanel.classList.remove("side-panel-info-40", "side-panel-info-50");
-    sidePanel.classList.add("side-panel-info-30");
-  } else if (width <= 1700) {
-    sidePanel.style.width = "250px";
-
-    sidePanel.classList.remove("side-panel-info-30", "side-panel-info-50");
-    sidePanel.classList.add("side-panel-info-40");
-  } else {
-    sidePanel.style.width = "300px";
-
-    sidePanel.classList.remove("side-panel-info-30", "side-panel-info-40");
-    sidePanel.classList.add("side-panel-info-50");
-  }
-
   // control the font size and width of viewer
   if (width <= 600) {
-    safeResize(currentRendition, 300, viewer.offsetHeight);
+    safeResize(currentRendition, viewer.offsetWidth, viewer.offsetHeight);
   } else if (width <= 915) {
-    currentRendition.themes.fontSize("10px"); // Small font size for mobile
-    safeResize(currentRendition, 500, viewer.offsetHeight);
+    currentRendition.themes.fontSize("22px");
+    safeResize(currentRendition, viewer.offsetWidth, viewer.offsetHeight);
   } else if (width <= 1115) {
-    currentRendition.themes.fontSize("12px"); // Medium font size for tablets
+    currentRendition.themes.fontSize("20px");
     safeResize(currentRendition, 800, viewer.offsetHeight);
   } else if (width <= 1400) {
-    currentRendition.themes.fontSize("13px"); // Medium font size for tablets
     safeResize(currentRendition, 1000, viewer.offsetHeight);
   } else {
-    currentRendition.themes.fontSize("18px"); // Larger font size for desktops
+    currentRendition.themes.fontSize("18px");
     safeResize(currentRendition, viewer.offsetWidth, viewer.offsetHeight);
   }
 };
@@ -380,11 +363,9 @@ export const handleAddEbook = () => {
 };
 
 let startX = 0;
-let startY = 0;
 let endX = 0;
-let endY = 0;
 
-const threshold = 50; // Minimum distance to be considered a swipe (in pixels)
+const threshold = 30; // Minimum distance to be considered a swipe (in pixels)
 
 /**
  * Records the current pageX and pageY coordinates through MouseEvent or TouchEvent.
@@ -392,11 +373,9 @@ const threshold = 50; // Minimum distance to be considered a swipe (in pixels)
 export const swipeStartHandler = (event: MouseEvent | TouchEvent) => {
   if (event.type == "mousedown") {
     startX = event.pageX;
-    startY = event.pageY;
   } else {
     const touch = event.touches[0];
     startX = touch.pageX;
-    startY = touch.pageY;
   }
 };
 
@@ -409,11 +388,9 @@ export const swipeEndHandler = (
 ) => {
   if (event.type == "mouseup") {
     endX = event.pageX;
-    endY = event.pageY;
   } else {
     const touch = event.changedTouches[0];
     endX = touch.pageX;
-    endY = touch.pageY;
   }
 
   const deltaX = endX - startX;

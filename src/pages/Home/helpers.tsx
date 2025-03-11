@@ -402,17 +402,17 @@ export const swipeEndHandler = (
 
 // Add cards to Anki
 // Function to check if the deck exists
-async function deckExists(deckName) {
+async function deckExists(deckName: string) {
   const response = await invokeAnkiConnect("deckNames");
   return response.includes(deckName);
 }
 
 // Function to create a deck (if it doesn't exist)
-async function createDeckIfNotExists(deckName) {
+async function createDeckIfNotExists(deckName: string) {
   const exists = await deckExists(deckName);
 
   if (!exists) {
-    const response = await invokeAnkiConnect("createDeck", {
+    await invokeAnkiConnect("createDeck", {
       deck: deckName,
     });
     console.log(`Deck "${deckName}" created.`);
@@ -422,7 +422,11 @@ async function createDeckIfNotExists(deckName) {
 }
 
 // Function to add cards to the deck
-export async function addCardToDeck(deckName, front, back) {
+export const addCardToDeck: addCardToDeckInterface = async (
+  deckName,
+  front,
+  back
+) => {
   // First, ensure the deck exists
   await createDeckIfNotExists(deckName);
 
@@ -442,9 +446,9 @@ export async function addCardToDeck(deckName, front, back) {
 
   const response = await invokeAnkiConnect("addNote", { note });
   console.log(response);
-}
+};
 
-async function invokeAnkiConnect(action, params = {}) {
+async function invokeAnkiConnect(action: string, params = {}) {
   try {
     const response = await fetch("http://localhost:8765", {
       method: "POST",

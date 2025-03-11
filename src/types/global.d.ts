@@ -44,3 +44,7 @@ declare interface loopSearchDictInterface {
     >
   ): DictionaryItem[];
 }
+
+declare interface addCardToDeckInterface {
+  (deckname: string, front: string, back: DictionaryItem): Promise<void>;
+}

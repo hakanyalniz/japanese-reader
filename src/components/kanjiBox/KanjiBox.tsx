@@ -19,18 +19,17 @@ const KanjiBox: React.FC<KanjiBoxInterface> = ({
   const handleKanjiBox = (event: { clientX: number; clientY: number }) => {
     if (!kanjiBox.current) return;
 
-    // console.log(currentRendition);
-    // console.log(currentRendition.manager);
-    // console.log(currentRendition.manager.views);
+    const iframe = document.querySelector("iframe");
+    if (!iframe) return;
 
-    // console.log(event);
-    // positionX.current = event.clientX;
-    // positionY.current = event.clientY;
+    // Access the iframe's document
+    const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+    if (!iframeDoc) return;
+    const iframeRect = iframe.getBoundingClientRect();
 
-    positionX.current = event.screenX;
-    positionY.current = event.screenY - 130;
+    positionX.current = event.clientX - -iframeRect.x;
+    positionY.current = event.clientY;
 
-    console.log(positionX.current, positionY.current);
     kanjiBox.current.style.top = `${positionY.current}px`;
     kanjiBox.current.style.left = `${positionX.current}px`;
   };

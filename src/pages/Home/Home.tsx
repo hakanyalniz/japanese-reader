@@ -152,11 +152,14 @@ function Home() {
   return (
     <div className="home-flex">
       <div className="container">
-        <KanjiBox
-          currentRendition={currentRendition}
-          foundDictionaryData={foundDictionaryData}
-        />
-        <div id="ebook-navigation">
+        <div className="kanji-box-container">
+          <KanjiBox
+            currentRendition={currentRendition}
+            foundDictionaryData={foundDictionaryData}
+          />
+        </div>
+
+        {/* <div id="ebook-navigation">
           <button
             className="nav-button"
             onClick={() => handlePrevPage(currentRendition)}
@@ -171,7 +174,7 @@ function Home() {
           >
             Next
           </button>
-        </div>
+        </div> */}
         <div id="add-remove-container">
           {isEpubDisplayed && (
             <button

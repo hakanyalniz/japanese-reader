@@ -19,10 +19,19 @@ const KanjiBox: React.FC<KanjiBoxInterface> = ({
   const handleKanjiBox = (event: { clientX: number; clientY: number }) => {
     if (!kanjiBox.current) return;
 
-    positionX.current = event.clientX;
-    positionY.current = event.clientY;
+    // console.log(currentRendition);
+    // console.log(currentRendition.manager);
+    // console.log(currentRendition.manager.views);
 
-    kanjiBox.current.style.top = `${positionY.current + 100}px`;
+    // console.log(event);
+    // positionX.current = event.clientX;
+    // positionY.current = event.clientY;
+
+    positionX.current = event.screenX;
+    positionY.current = event.screenY - 130;
+
+    console.log(positionX.current, positionY.current);
+    kanjiBox.current.style.top = `${positionY.current}px`;
     kanjiBox.current.style.left = `${positionX.current}px`;
   };
 
@@ -55,7 +64,10 @@ const KanjiBox: React.FC<KanjiBoxInterface> = ({
             <div className="kanji-info">{item["kanji"]}</div>
             <div className="kana-info">{item["kana"]}</div>
             <div className="meaning-info">{item["meaning"]}</div>
-            <button onClick={() => dispatch(addDictionaryHistory(item))}>
+            <button
+              className="nav-button"
+              onClick={() => dispatch(addDictionaryHistory(item))}
+            >
               Add
             </button>
           </div>

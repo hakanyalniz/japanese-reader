@@ -6,6 +6,7 @@
 
 .container {
   width: 100%;
+  overflow-x: hidden;
 }
 
 #viewer {
@@ -17,15 +18,16 @@
   background-color: black;
 }
 
-#ebook-navigation {
+/* #ebook-navigation {
   position: absolute;
-  top: 10px;
+  top: -20px;
   right: 50vw;
+  z-index: 1;
 }
 
 #ebook-navigation button {
   margin-left: 5px;
-}
+} */
 
 @media (max-width: 900px) {
   #ebook-navigation {

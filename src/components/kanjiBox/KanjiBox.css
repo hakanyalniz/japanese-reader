@@ -7,6 +7,10 @@
   z-index: 1;
 }
 
+.kanji-box-container {
+  position: relative;
+}
+
 /* Hide scrollbar for webkit browsers (Chrome, Safari) */
 #kanji-box::-webkit-scrollbar {
   display: none;

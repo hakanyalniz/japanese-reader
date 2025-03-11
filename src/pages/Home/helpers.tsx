@@ -88,6 +88,7 @@ export const handleFileInput: handleFileInputInterface = (
           flow: "paginated",
           allowScriptedContent: true,
           spread: "none",
+          layout: "reflowable",
         });
 
         // select themes to make the epub viewer look different

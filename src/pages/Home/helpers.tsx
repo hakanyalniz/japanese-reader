@@ -1,6 +1,9 @@
 import ePub, { Rendition } from "epubjs";
 import axios from "axios";
 
+/**
+ * Store ebook metadata for later use in reconstructing it if the user returns to the page after leaving it.
+ */
 export const storeFileMetaData = (file: File | undefined) => {
   if (file == undefined) return;
   return new Promise((resolve, reject) => {
@@ -28,6 +31,9 @@ export const storeFileMetaData = (file: File | undefined) => {
   });
 };
 
+/**
+ * Store ebook data field metadata as base64, when the time to use it comes, turn it back to file using the data metadata and other metadata already collected.
+ */
 const base64ToFile = (
   base64: string,
   name: string,
@@ -44,7 +50,11 @@ const base64ToFile = (
   return new File([blob], name, { type, lastModified });
 };
 
-// When file input changes display the epub file
+/**
+ * Takes file input, open the epub file received, display it via the epubjs library. Registers themes and additional settings.
+ * If the user has already opened an epub file previously, save the metadata and if the remove button hasn't yet been clicked,
+ * use the metadata to load the epub again. This function runs when the file input element changes, as in, an input is entered.
+ */
 export const handleFileInput: handleFileInputInterface = (
   setCurrentRendition,
   viewerRef,
@@ -142,7 +152,9 @@ export const getClickedKanji: getClickedKanjiInterface = (
   });
 };
 
-// Fetch data from Flask
+/**
+ * Fetch data from Flask
+ */
 export const handleDataFetching = (
   setDictionaryData: React.Dispatch<
     React.SetStateAction<DictionaryItem[] | null>
@@ -161,15 +173,24 @@ export const handleDataFetching = (
     });
 };
 
-// Then, search for the next character in the query
-// look at the kanji field and see if the rest of the query is there
-// 引きこもり;
-// Start searching the sentence from that point on
-// Fetch all the data that hits
-// see if the character at clickedQuerySentence[y] is equal to dictionaryData[x]
-// if not, add the next character, and see if that is equal
-// and so on. The idea is that, we start searching from the 引
-// all the way 引きこもり, so we can find the word.
+/**
+ * Loops through the clicked character and all the way through the rest of the sentence and searches them inside the dictionary data.
+ * Starts from the clicked character location, if found adds it at setFoundDictionaryData, then moves onto the next character in the sentence,
+ * and adds that character, and the previous character, together. Searches that aswell. Loops through the sentence in this manner, searching for
+ * word combinations.
+ *
+ * Example:
+ *
+ * 引きこもり
+ *
+ * clickedQuery is 引.
+ *
+ * currentWordBeingSearched is 引.
+ *
+ * Searches the currentWordBeingSearched in dictionaryData, then moves onto the next character, adding き into currentWordBeingSearched.
+ *
+ * Now currentWordBeingSearched is 引き, searches this in the dictionaryData aswell. And so on.
+ */
 export const loopSearchDict: loopSearchDictInterface = (
   dictionaryData,
   clickedQuery,
@@ -351,7 +372,9 @@ export const handleIFrameKey = (currentRendition: Rendition | null) => {
   }
 };
 
-// Clicking the button will click the hidden file input
+/**
+ * Will run the click method on the hidden file input element.
+ */
 export const handleAddEbook = () => {
   document.getElementById("fileInput")?.click();
 };
@@ -363,6 +386,9 @@ let endY = 0;
 
 const threshold = 50; // Minimum distance to be considered a swipe (in pixels)
 
+/**
+ * Records the current pageX and pageY coordinates through MouseEvent or TouchEvent.
+ */
 export const swipeStartHandler = (event: MouseEvent | TouchEvent) => {
   if (event.type == "mousedown") {
     startX = event.pageX;
@@ -374,6 +400,9 @@ export const swipeStartHandler = (event: MouseEvent | TouchEvent) => {
   }
 };
 
+/**
+ * Records the end point of the pageX and pageY coordinates. Subtracts them from the start coordinates and decides swipe direction according to result.
+ */
 export const swipeEndHandler = (
   event: MouseEvent | TouchEvent,
   currentRendition: Rendition
@@ -388,9 +417,8 @@ export const swipeEndHandler = (
   }
 
   const deltaX = endX - startX;
-  const deltaY = endY - startY;
 
-  if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > threshold) {
+  if (Math.abs(deltaX) > threshold) {
     // Horizontal swipe
     if (deltaX > 0) {
       currentRendition.prev();
@@ -400,14 +428,17 @@ export const swipeEndHandler = (
   }
 };
 
-// Add cards to Anki
-// Function to check if the deck exists
+/**
+ * Checks if a deck exists or not.
+ */
 async function deckExists(deckName: string) {
   const response = await invokeAnkiConnect("deckNames");
   return response.includes(deckName);
 }
 
-// Function to create a deck (if it doesn't exist)
+/**
+ * Creates a deck if it doesn't exist already.
+ */
 async function createDeckIfNotExists(deckName: string) {
   const exists = await deckExists(deckName);
 
@@ -421,7 +452,9 @@ async function createDeckIfNotExists(deckName: string) {
   }
 }
 
-// Function to add cards to the deck
+/**
+ * Adds cards to the deck, creates a deck if it doesn't exist already.
+ */
 export const addCardToDeck: addCardToDeckInterface = async (
   deckName,
   front,
@@ -448,6 +481,9 @@ export const addCardToDeck: addCardToDeckInterface = async (
   console.log(response);
 };
 
+/**
+ * Communicates with the AnkiConnect local API by executing commands.
+ */
 async function invokeAnkiConnect(action: string, params = {}) {
   try {
     const response = await fetch("http://localhost:8765", {

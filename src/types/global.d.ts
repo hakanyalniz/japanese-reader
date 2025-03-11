@@ -51,3 +51,8 @@ declare interface loopSearchDictInterface {
 declare interface addCardToDeckInterface {
   (deckname: string, front: string, back: DictionaryItem): Promise<void>;
 }
+
+declare interface KanjiBoxInterface {
+  currentRendition: Rendition | null;
+  foundDictionaryData: DictionaryItem[];
+}

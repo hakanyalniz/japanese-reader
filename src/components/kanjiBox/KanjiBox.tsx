@@ -1,10 +1,13 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { addDictionaryHistory } from "../../store/slices/fileSlices";
 
 import "./KanjiBox.css";
 
-const KanjiBox = ({ currentRendition, foundDictionaryData }) => {
+const KanjiBox: React.FC<KanjiBoxInterface> = ({
+  currentRendition,
+  foundDictionaryData,
+}) => {
   const dispatch = useDispatch();
   const positionX = useRef(0);
   const positionY = useRef(0);
@@ -13,7 +16,7 @@ const KanjiBox = ({ currentRendition, foundDictionaryData }) => {
   // Used for the kanji box, which will show information about the kanji clicked
   const kanjiBox = useRef<HTMLDivElement>(null);
 
-  const handleKanjiBox = (event) => {
+  const handleKanjiBox = (event: { clientX: number; clientY: number }) => {
     if (!kanjiBox.current) return;
 
     positionX.current = event.clientX;
@@ -38,7 +41,10 @@ const KanjiBox = ({ currentRendition, foundDictionaryData }) => {
   useEffect(() => {
     if (!currentRendition) return;
 
-    currentRendition.on("click", (event) => handleKanjiBox(event));
+    currentRendition.on(
+      "click",
+      (event: { clientX: number; clientY: number }) => handleKanjiBox(event)
+    );
   }, [currentRendition]);
 
   return (

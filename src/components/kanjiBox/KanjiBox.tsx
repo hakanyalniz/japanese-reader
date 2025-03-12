@@ -7,6 +7,7 @@ import "./KanjiBox.css";
 const KanjiBox: React.FC<KanjiBoxInterface> = ({
   currentRendition,
   foundDictionaryData,
+  viewerRef,
 }) => {
   const dispatch = useDispatch();
   const positionX = useRef(0);
@@ -22,9 +23,10 @@ const KanjiBox: React.FC<KanjiBoxInterface> = ({
     const generalContainer = document.getElementById(
       "container"
     ) as HTMLElement;
-    const generalContainerWidth = parseFloat(
-      window.getComputedStyle(generalContainer).marginLeft
-    );
+
+    const rect = generalContainer.getBoundingClientRect();
+    const parentRect = generalContainer.offsetParent.getBoundingClientRect();
+    const containerMarginLeft = -(rect.width - parentRect.width) / 2;
 
     const iframe = document.querySelector("iframe");
 
@@ -34,16 +36,12 @@ const KanjiBox: React.FC<KanjiBoxInterface> = ({
     const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
     if (!iframeDoc) return;
     const iframeRect = iframe.getBoundingClientRect();
-    // console.log("iframe", iframe);
-    console.log("event.clientX", event.clientX);
-    // console.log("iframeRect", iframeRect);
 
-    console.log("generalContainerWidth", generalContainerWidth);
-    positionX.current = event.clientX - -iframeRect.x - generalContainerWidth;
-    // positionX.current = event.clientX % generalContainerWidth;
-
+    // The clientX takes the width of the iframe into account, which is in thousands due to how epubjs calculates pagination
+    // to deal with this we need to delete the extra iframe width that is taken into account
+    // and then we also need to take into account the margin of the container, which effects iframe width
+    positionX.current = event.clientX - -iframeRect.x - containerMarginLeft;
     positionY.current = event.clientY + 30;
-    console.log("positionX.current", positionX.current);
 
     kanjiBox.current.style.top = `${positionY.current}px`;
     kanjiBox.current.style.left = `${positionX.current}px`;

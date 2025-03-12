@@ -55,4 +55,5 @@ declare interface addCardToDeckInterface {
 declare interface KanjiBoxInterface {
   currentRendition: Rendition | null;
   foundDictionaryData: DictionaryItem[];
+  viewerRef: React.RefObject<HTMLDivElement | null>;
 }

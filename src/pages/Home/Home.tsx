@@ -149,6 +149,12 @@ function Home() {
     );
   }, [currentlyDisplayedEpub, isEpubDisplayed]);
 
+  useEffect(() => {
+    document.addEventListener("click", () => {
+      setFoundDictionaryData([]);
+    });
+  }, []);
+
   return (
     <div className="home-flex">
       <div className="container">

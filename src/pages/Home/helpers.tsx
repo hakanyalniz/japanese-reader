@@ -114,6 +114,7 @@ export const handleFileInput: handleFileInputInterface = (
   }
 };
 
+// Write explanation here
 export const getClickedKanji: getClickedKanjiInterface = (
   currentRendition,
   clickedQuery,

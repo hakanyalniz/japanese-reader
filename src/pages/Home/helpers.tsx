@@ -217,20 +217,26 @@ export const loopSearchDict: loopSearchDictInterface = (
 
   const result: DictionaryItem[] = [];
   let currentWordBeingSearched = "";
-
+  console.log(result);
   for (let x = 0; x < dictionaryData.length; x++) {
     currentWordBeingSearched = "";
     for (let y = startIndex; y <= endIndex; y++) {
       if (currentWordBeingSearched == dictionaryData[x]["kanji"]) {
         // Ensure that the result is not repeated inside the results
         if (!result.includes(dictionaryData[x])) {
-          result.push(dictionaryData[x]);
+          result.push({
+            ...dictionaryData[x],
+            sentence: clickedQuerySentence.current,
+          });
           break;
         }
       } else {
         // Add the first kanji in the dict list, so it is the default meaning
         if (x == 0 && y == startIndex) {
-          result.push(dictionaryData[x]);
+          result.push({
+            ...dictionaryData[x],
+            sentence: clickedQuerySentence.current,
+          });
         }
         currentWordBeingSearched += clickedQuerySentence.current[y];
       }
@@ -451,7 +457,7 @@ export const addCardToDeck: addCardToDeckInterface = async (
       <br/>
       <br/>
       <p style="visibility:hidden">${back.id}</p>`,
-      Back: `<p>Kana: ${back.kana}</p><p>Meaning: ${back.meaning}</p>`,
+      Back: `<p>${back.kana}</p><p>${back.meaning}</p><p>${back.sentence}</p>`,
     },
     tags: ["kanji"], // Optional: add tags if needed
   };

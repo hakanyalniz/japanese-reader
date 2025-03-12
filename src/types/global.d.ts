@@ -3,6 +3,7 @@ declare interface DictionaryItem {
   kanji: string;
   kana: string;
   meaning: string;
+  sentence: string;
 }
 
 declare interface fileMetaData {

@@ -216,8 +216,9 @@ export const loopSearchDict: loopSearchDictInterface = (
   const endIndex = startIndex + 5;
 
   const result: DictionaryItem[] = [];
+  const tempResult: DictionaryItem[] = [];
   let currentWordBeingSearched = "";
-  console.log(result);
+
   for (let x = 0; x < dictionaryData.length; x++) {
     currentWordBeingSearched = "";
     for (let y = startIndex; y <= endIndex; y++) {
@@ -225,6 +226,15 @@ export const loopSearchDict: loopSearchDictInterface = (
         // Ensure that the result is not repeated inside the results
         if (!result.includes(dictionaryData[x])) {
           result.push({
+            ...dictionaryData[x],
+            sentence: clickedQuerySentence.current,
+          });
+          break;
+        }
+      } else if (currentWordBeingSearched == dictionaryData[x]["kana"]) {
+        // if matching kanji not found, this looks for matching kana
+        if (!tempResult.includes(dictionaryData[x])) {
+          tempResult.push({
             ...dictionaryData[x],
             sentence: clickedQuerySentence.current,
           });
@@ -242,6 +252,39 @@ export const loopSearchDict: loopSearchDictInterface = (
       }
     }
   }
+
+  // The logic here is that, by finding the largest kana length, we can find the full word we clicked on
+  // since the largest kana in the dictionary is also the full word
+  // this happens due to the searching loop logic we have, in the word 引きこもり
+  // the largest length will be the word itself, since we search by adding character and 引きこもりが is not a word
+  // we also break the loop when the word is found
+  // find the largest kana length in dictionary
+  let largestCharacter = 0;
+  tempResult.forEach((item) => {
+    if (item.kana.length > largestCharacter) {
+      largestCharacter = item.kana.length;
+    }
+  });
+  // take sentence, start from search location
+  // move 'largest kana length' to the right
+  // take the word inbetween
+  let fullWord = "";
+  for (let y = startIndex; y < startIndex + largestCharacter; y++) {
+    fullWord += clickedQuerySentence.current[y];
+  }
+  // take the dictionary results with the full word
+  const fullWordDictionaryResult = tempResult.filter(
+    (item) => item.kana == fullWord
+  );
+  // add it to result
+  fullWordDictionaryResult.forEach((item) => {
+    result.unshift(item);
+  });
+  // sort so the largest items appear first
+  result.sort(
+    (a, b) => b.kanji.length - a.kanji.length || b.kana.length - a.kana.length
+  );
+
   return result;
 };
 

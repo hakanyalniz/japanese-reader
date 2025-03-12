@@ -7,7 +7,6 @@ import "./KanjiBox.css";
 const KanjiBox: React.FC<KanjiBoxInterface> = ({
   currentRendition,
   foundDictionaryData,
-  viewerRef,
 }) => {
   const dispatch = useDispatch();
   const positionX = useRef(0);
@@ -25,7 +24,8 @@ const KanjiBox: React.FC<KanjiBoxInterface> = ({
     ) as HTMLElement;
 
     const rect = generalContainer.getBoundingClientRect();
-    const parentRect = generalContainer.offsetParent.getBoundingClientRect();
+    const parentRect =
+      generalContainer.offsetParent?.getBoundingClientRect() as DOMRect;
     const containerMarginLeft = -(rect.width - parentRect.width) / 2;
 
     const iframe = document.querySelector("iframe");

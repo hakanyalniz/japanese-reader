@@ -162,7 +162,6 @@ function Home() {
           <KanjiBox
             currentRendition={currentRendition}
             foundDictionaryData={foundDictionaryData}
-            viewerRef={viewerRef}
           />
         </div>
 

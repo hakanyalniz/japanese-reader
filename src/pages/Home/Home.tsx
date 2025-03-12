@@ -157,7 +157,7 @@ function Home() {
 
   return (
     <div className="home-flex">
-      <div className="container">
+      <div id="container">
         <div className="kanji-box-container">
           <KanjiBox
             currentRendition={currentRendition}

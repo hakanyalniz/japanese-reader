@@ -4,7 +4,7 @@
   flex-direction: row;
 }
 
-.container {
+#container {
   width: 100%;
   overflow-x: hidden;
 }

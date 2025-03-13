@@ -3,6 +3,9 @@ import axios from "axios";
 
 /**
  * Store ebook metadata for later use in reconstructing it if the user returns to the page after leaving it.
+ *
+ * @param file
+ * @returns
  */
 export const storeFileMetaData = (file: File | undefined) => {
   if (file == undefined) return;
@@ -33,6 +36,12 @@ export const storeFileMetaData = (file: File | undefined) => {
 
 /**
  * Store ebook data field metadata as base64, when the time to use it comes, turn it back to file using the data metadata and other metadata already collected.
+ *
+ * @param base64
+ * @param name
+ * @param type
+ * @param lastModified
+ * @returns
  */
 const base64ToFile = (
   base64: string,
@@ -54,6 +63,13 @@ const base64ToFile = (
  * Takes file input, open the epub file received, display it via the epubjs library. Registers themes and additional settings.
  * If the user has already opened an epub file previously, save the metadata and if the remove button hasn't yet been clicked,
  * use the metadata to load the epub again. This function runs when the file input element changes, as in, an input is entered.
+ *
+ * @param setCurrentRendition
+ * @param viewerRef
+ * @param setIsEpubDisplayed
+ * @param event
+ * @param currentlyDisplayedEpub
+ * @returns
  */
 export const handleFileInput: handleFileInputInterface = (
   setCurrentRendition,
@@ -114,7 +130,15 @@ export const handleFileInput: handleFileInputInterface = (
   }
 };
 
-// Write explanation here
+/**
+ * Get the kanji/character the user clicked on, alongside the sentence in which that character appeared.
+ *
+ * @param currentRendition
+ * @param clickedQuery
+ * @param clickedQuerySentence
+ * @param setDictionaryData
+ * @param setFoundDictionaryData
+ */
 export const getClickedKanji: getClickedKanjiInterface = (
   currentRendition,
   clickedQuery,
@@ -158,7 +182,10 @@ export const getClickedKanji: getClickedKanjiInterface = (
 };
 
 /**
- * Fetch data from Flask
+ * Fetch data from Flask.
+ *
+ * @param setDictionaryData
+ * @param params
  */
 export const handleDataFetching = (
   setDictionaryData: React.Dispatch<
@@ -195,6 +222,12 @@ export const handleDataFetching = (
  * Searches the currentWordBeingSearched in dictionaryData, then moves onto the next character, adding き into currentWordBeingSearched.
  *
  * Now currentWordBeingSearched is 引き, searches this in the dictionaryData aswell. And so on.
+ *
+ * @param dictionaryData
+ * @param clickedQuery
+ * @param clickedQuerySentence
+ * @param setFoundDictionaryData
+ * @returns
  */
 export const loopSearchDict: loopSearchDictInterface = (
   dictionaryData,
@@ -290,6 +323,11 @@ export const loopSearchDict: loopSearchDictInterface = (
 
 /**
  * Resizes the IFrame that displays epub. A replacement for the official rendition.resize method.
+ *
+ * @param rendition
+ * @param width
+ * @param height
+ * @returns
  */
 export const safeResize = (
   rendition: Rendition,
@@ -313,6 +351,9 @@ export const safeResize = (
 
 /**
  * Resize the epub font to make it more responsive.
+ *
+ * @param currentRendition
+ * @returns
  */
 export const handleResize = (currentRendition: Rendition | null) => {
   const width = window.innerWidth;
@@ -341,6 +382,8 @@ export const handleResize = (currentRendition: Rendition | null) => {
 
 /**
  * Handle pagination control next page via HTML button.
+ *
+ * @param currentRendition
  */
 export const handleNextPage = (currentRendition: Rendition | null) => {
   if (currentRendition) {
@@ -350,6 +393,8 @@ export const handleNextPage = (currentRendition: Rendition | null) => {
 
 /**
  * Handle pagination control previous page via HTML button.
+ *
+ * @param currentRendition
  */
 export const handlePrevPage = (currentRendition: Rendition | null) => {
   if (currentRendition) {
@@ -359,6 +404,10 @@ export const handlePrevPage = (currentRendition: Rendition | null) => {
 
 /**
  * Clear the EPUB content and reset the viewer.
+ *
+ * @param setFoundDictionaryData
+ * @param currentRendition
+ * @param setIsEpubDisplayed
  */
 export const handleRemoveEbook = (
   setFoundDictionaryData: React.Dispatch<
@@ -393,6 +442,8 @@ export const handleKeyDown = (
 
 /**
  * Navigate pagination via keyboard arrow keys while the focus is inside of the IFrame.
+ *
+ * @param currentRendition
  */
 export const handleIFrameKey = (currentRendition: Rendition | null) => {
   if (currentRendition) {
@@ -408,6 +459,7 @@ export const handleIFrameKey = (currentRendition: Rendition | null) => {
 
 /**
  * Will run the click method on the hidden file input element.
+ *
  */
 export const handleAddEbook = () => {
   document.getElementById("fileInput")?.click();
@@ -420,6 +472,8 @@ const threshold = 30; // Minimum distance to be considered a swipe (in pixels)
 
 /**
  * Records the current pageX and pageY coordinates through MouseEvent or TouchEvent.
+ *
+ * @param event
  */
 export const swipeStartHandler = (event: MouseEvent | TouchEvent) => {
   if (event.type == "mousedown") {
@@ -432,6 +486,9 @@ export const swipeStartHandler = (event: MouseEvent | TouchEvent) => {
 
 /**
  * Records the end point of the pageX and pageY coordinates. Subtracts them from the start coordinates and decides swipe direction according to result.
+ *
+ * @param event
+ * @param currentRendition
  */
 export const swipeEndHandler = (
   event: MouseEvent | TouchEvent,
@@ -458,6 +515,9 @@ export const swipeEndHandler = (
 
 /**
  * Checks if a deck exists or not.
+ *
+ * @param deckName
+ * @returns
  */
 async function deckExists(deckName: string) {
   const response = await invokeAnkiConnect("deckNames");
@@ -466,6 +526,8 @@ async function deckExists(deckName: string) {
 
 /**
  * Creates a deck if it doesn't exist already.
+ *
+ * @param deckName
  */
 async function createDeckIfNotExists(deckName: string) {
   const exists = await deckExists(deckName);
@@ -482,6 +544,10 @@ async function createDeckIfNotExists(deckName: string) {
 
 /**
  * Adds cards to the deck, creates a deck if it doesn't exist already.
+ *
+ * @param deckName
+ * @param front
+ * @param back
  */
 export const addCardToDeck: addCardToDeckInterface = async (
   deckName,
@@ -511,6 +577,10 @@ export const addCardToDeck: addCardToDeckInterface = async (
 
 /**
  * Communicates with the AnkiConnect local API by executing commands.
+ *
+ * @param action
+ * @param params
+ * @returns
  */
 async function invokeAnkiConnect(action: string, params = {}) {
   try {

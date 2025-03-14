@@ -1,7 +1,5 @@
 # Japanese Reader
 
-#### Video Demo: <[URL](https://www.youtube.com/watch?v=uUgGWqLjYhQ)>
-
 ## Introduction
 
 Japanese Reader is a website that allows users to upload epub files, navigate them through keyboard arrow keys or mouse/touch gestures, lookup unknown words, add these words to a notebooks page and finally, send them to Anki for review.

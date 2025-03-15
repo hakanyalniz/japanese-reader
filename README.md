@@ -8,6 +8,8 @@ It was created with vite, uses React with TypeScript for Frontend and Flask with
 
 For Anki, it uses [AnkiConnect](https://git.sr.ht/~foosoft/anki-connect) for the Anki local API, allowing us to send and manipulate the Anki software.
 
+This website is still in development and there are many places in the code that I hope to improve in the future.
+
 ## How to use
 
 Using the website is simple and straightforward. First, the user must open Anki and install AnkiConnect so that we can send cards over. Next, they must open the website and add a Japanese epub book of their choice. They can navigate the book by their keyboard arrow keys or mouse swipe gestures. The user can also use touch to move the book, but currently it is not possible to send anki cards to mobile users due to limitations. This will be solved in a later update.

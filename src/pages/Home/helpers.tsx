@@ -170,9 +170,12 @@ export const getClickedKanji: getClickedKanjiInterface = (
           console.log(clickedCharacter);
           clickedQuery.current = clickedCharacter;
 
-          handleDataFetching(setDictionaryData, {
-            query: clickedCharacter,
-          });
+          handleDataFetching(
+            {
+              query: clickedCharacter,
+            },
+            setDictionaryData
+          );
         } else {
           setFoundDictionaryData([]);
         }
@@ -188,20 +191,25 @@ export const getClickedKanji: getClickedKanjiInterface = (
  * @param params
  */
 export const handleDataFetching = (
-  setDictionaryData: React.Dispatch<
+  params: Record<string, string>, // Accept multiple parameters as an object
+  setDictionaryData?: React.Dispatch<
     React.SetStateAction<DictionaryItem[] | null>
-  >,
-  params: Record<string, string> // Accept multiple parameters as an object
+  >
 ) => {
-  axios
+  return axios
     .get("http://127.0.0.1:5000/api/data", {
       params,
     })
     .then((response) => {
-      setDictionaryData(response.data);
+      if (setDictionaryData) {
+        setDictionaryData(response.data);
+      } else {
+        return response.data;
+      }
     })
     .catch((error) => {
       console.error("Error fetching data from Flask:", error);
+      return 0;
     });
 };
 

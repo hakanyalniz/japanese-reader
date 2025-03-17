@@ -1,12 +1,35 @@
 import "./Dictionary.css";
+import { handleDataFetching } from "../Home/helpers";
+
+import { useEffect, useState } from "react";
 
 function Dictionary() {
+  const [searchResults, setSearchResults] = useState(0);
+
+  const handleFormButtonClick = (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+
+    const searchBar = document.getElementById("searchBar") as HTMLInputElement;
+
+    if (!searchBar) return;
+
+    handleDataFetching({
+      query: searchBar.value,
+    }).then((data) => setSearchResults(data));
+  };
+
+  useEffect(() => {
+    console.log(searchResults);
+  }, [searchResults]);
+
   return (
     <div>
-      <div className="search-container">
-        <input type="text" placeholder="Search..." id="searchBar" />
-        <button id="searchButton">Search</button>
-      </div>
+      <form className="search-container">
+        <input type="text" placeholder="Search..." id="searchBar" required />
+        <button id="searchButton" onClick={handleFormButtonClick}>
+          Search
+        </button>
+      </form>
 
       <div className="table-container">
         <table className="kanji-table">

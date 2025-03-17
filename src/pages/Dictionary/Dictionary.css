@@ -5,6 +5,8 @@
   gap: 0.5rem;
   max-width: 800px;
   margin: auto;
+  margin-top: 50px;
+  margin-bottom: 50px;
 }
 
 /* Style for the search bar */

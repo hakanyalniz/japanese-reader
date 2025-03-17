@@ -63,3 +63,5 @@ function Dictionary() {
 }
 
 export default Dictionary;
+
+// Add pagination

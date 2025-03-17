@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./layouts/MainLayout";
 import Home from "./pages/Home/Home";
 import Notebook from "./pages/Notebook/Notebook";
+import Dictionary from "./pages/Dictionary/Dictionary";
 import "./styles/App.css";
 
 import { Provider } from "react-redux";
@@ -14,6 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
+            <Route path="dictionary" element={<Dictionary />} />
             <Route path="notebook" element={<Notebook />} />
           </Route>
         </Routes>

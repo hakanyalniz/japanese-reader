@@ -8,8 +8,8 @@ const TopNavBar = () => {
         <Link className="nav-button" to="/">
           Home
         </Link>
-        <Link className="nav-button" to="instructions">
-          Instructions
+        <Link className="nav-button" to="dictionary">
+          Dictionary
         </Link>
         <Link className="nav-button" to="notebook">
           Notebook

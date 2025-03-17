@@ -4,23 +4,28 @@ import { handleDataFetching } from "../Home/helpers";
 import { useEffect, useState } from "react";
 
 function Dictionary() {
-  const [searchResults, setSearchResults] = useState(0);
+  const [searchResults, setSearchResults] = useState([]);
+  let searchBar: HTMLInputElement;
 
   const handleFormButtonClick = (event: { preventDefault: () => void }) => {
     event.preventDefault();
 
-    const searchBar = document.getElementById("searchBar") as HTMLInputElement;
+    if (searchBar.value == "") {
+      setSearchResults([]);
+    }
 
-    if (!searchBar) return;
+    if (!searchBar || !searchBar.value || searchBar.value == "") return;
 
     handleDataFetching({
       query: searchBar.value,
-    }).then((data) => setSearchResults(data));
+    }).then((data) => setSearchResults(data.slice(0, 20)));
   };
 
   useEffect(() => {
-    console.log(searchResults);
-  }, [searchResults]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    searchBar = document.getElementById("searchBar") as HTMLInputElement;
+    searchBar.addEventListener("input", handleFormButtonClick);
+  }, []);
 
   return (
     <div>
@@ -40,7 +45,17 @@ function Dictionary() {
               <th>MEANING</th>
             </tr>
           </thead>
-          <tbody></tbody>
+          <tbody>
+            {searchResults.map((item, index) => {
+              return (
+                <tr key={index}>
+                  <td> {item["kanji"]}</td>
+                  <td> {item["kana"]}</td>
+                  <td> {item["meaning"]}</td>
+                </tr>
+              );
+            })}
+          </tbody>
         </table>
       </div>
     </div>

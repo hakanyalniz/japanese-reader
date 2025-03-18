@@ -28,6 +28,8 @@ function Dictionary() {
 
     if (!searchBar || !searchBar.value || searchBar.value == "") return;
 
+    setCurrentPagination(0);
+
     handleDataFetching({
       query: searchBar.value,
     }).then((data) => {
@@ -45,6 +47,10 @@ function Dictionary() {
 
   const handleNextPagination = () => {
     setCurrentPagination((prevState) => {
+      console.log(Math.floor(searchResults.length / ITEM_PER_PAGINATION));
+      if (Math.floor(searchResults.length / ITEM_PER_PAGINATION) <= prevState)
+        return prevState;
+
       return (prevState = prevState + 1);
     });
   };
@@ -57,10 +63,6 @@ function Dictionary() {
       return prevState;
     });
   };
-
-  useEffect(() => {
-    console.log(currentPagination);
-  });
 
   return (
     <div>

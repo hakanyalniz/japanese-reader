@@ -46,3 +46,37 @@
 #searchButton:active {
   background-color: #242424;
 }
+
+.pagination-buttons {
+  width: 125px;
+  padding: 5px;
+  margin: 0 auto;
+}
+
+.pagination-buttons button {
+  margin-left: 5px;
+
+  padding: 0.3rem 0.5rem;
+  background-color: white;
+  color: black;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.pagination-buttons button:hover {
+  background-color: black;
+  color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.pagination-buttons button:active {
+  background-color: #242424;
+}
+
+.pagination-number {
+  margin-left: 5px;
+}

@@ -1,0 +1,18 @@
+.login-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(
+    -50%,
+    -50%
+  ); /* Shift the div back by half its width and height */
+
+  padding: 10px;
+  text-align: center;
+
+  border-radius: 10px;
+
+  background-color: rgb(15, 15, 15);
+  height: 300px;
+  width: 500px;
+}

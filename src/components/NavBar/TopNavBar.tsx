@@ -1,9 +1,25 @@
 import { Link } from "react-router-dom";
+import LogIn from "../LogIn/LogIn";
 import "./TopNavBar.css";
+import { useEffect, useState } from "react";
 
 const TopNavBar = () => {
+  const [logInStatus, setLogInStatus] = useState(Boolean);
+
+  const logInPopUp = () => {
+    if (logInStatus) {
+      setLogInStatus(false);
+    } else {
+      setLogInStatus(true);
+    }
+  };
+
+  useEffect(() => {
+    console.log(logInStatus);
+  }, [logInStatus]);
   return (
     <div className="top-nav">
+      <LogIn />
       <div className="left-nav">
         <Link className="nav-button" to="/">
           Home
@@ -16,7 +32,9 @@ const TopNavBar = () => {
         </Link>
       </div>
       <div className="right-nav">
-        <button className="nav-button">Login</button>
+        <button className="nav-button" onClick={logInPopUp}>
+          {logInStatus ? "Log in" : "Log out"}
+        </button>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-.login-box {
+#login-box {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -19,7 +19,7 @@
   min-width: 100px;
 }
 
-.login-box input {
+#login-box input {
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
@@ -27,7 +27,7 @@
   border-radius: 4px;
   box-sizing: border-box;
 }
-.login-box button {
+#login-box button {
   width: 100%;
   padding: 10px;
   background-color: white;
@@ -38,7 +38,7 @@
   cursor: pointer;
 }
 
-.login-box button:hover {
+#login-box button:hover {
   background-color: #242424;
   color: white;
 }

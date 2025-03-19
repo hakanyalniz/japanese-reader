@@ -15,7 +15,9 @@ const TopNavBar = () => {
           Notebook
         </Link>
       </div>
-      <div className="right-nav"></div>
+      <div className="right-nav">
+        <button className="nav-button">Login</button>
+      </div>
     </div>
   );
 };

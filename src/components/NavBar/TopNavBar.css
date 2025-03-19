@@ -1,10 +1,15 @@
 .top-nav {
   display: flex;
   background-color: rgb(15, 15, 15);
-  padding: 15px;
+  padding: 10px;
   font-weight: 500;
+  align-self: center;
 
   justify-content: space-between;
+}
+
+.left-nav {
+  align-self: center;
 }
 
 .left-nav a {
@@ -13,6 +18,7 @@
 
 .nav-button {
   all: unset; /* Resets all inherited and default styles */
+  font-weight: 500;
 
   padding: 5px;
   border-radius: 5px;
@@ -27,4 +33,15 @@
 
 #fileInput {
   display: none;
+}
+
+@media (max-width: 440px) {
+  .top-nav,
+  #add-remove-container .nav-button {
+    font-size: 14px;
+  }
+
+  .top-nav .nav-button {
+    margin-right: 10px;
+  }
 }

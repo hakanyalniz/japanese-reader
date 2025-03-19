@@ -11,7 +11,7 @@ const LogIn = () => {
     }
   };
 
-  const handleRegister = () => {
+  const handleLogIn = () => {
     if (signUp) {
       setSignUp(false);
     } else {
@@ -23,16 +23,17 @@ const LogIn = () => {
     <div id="login-box">
       {signUp ? (
         <>
-          <h3>Sign up</h3>
+          <h3>Sign Up</h3>
           <form action="">
             <input type="text" placeholder="Username" required />
             <input type="password" placeholder="Password" required />
+            <input type="password" placeholder="Confirm Password" required />
             <button type="submit" onClick={dissappearForm}>
-              Login
+              Sign Up
             </button>
-            <p>Not registered?</p>
-            <span className="nav-button" onClick={handleRegister}>
-              Log in
+            <p>Want to Log In?</p>
+            <span className="nav-button" onClick={handleLogIn}>
+              Log In
             </span>
           </form>
         </>
@@ -43,11 +44,11 @@ const LogIn = () => {
             <input type="text" placeholder="Username" required />
             <input type="password" placeholder="Password" required />
             <button type="submit" onClick={dissappearForm}>
-              Login
+              Log In
             </button>
-            <p>Not registered?</p>
-            <span className="nav-button" onClick={handleRegister}>
-              Sign up
+            <p>Not Signed Up?</p>
+            <span className="nav-button" onClick={handleLogIn}>
+              Sign Up
             </span>
           </form>
         </>

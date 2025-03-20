@@ -27,9 +27,19 @@ const LogIn = ({ logInPopUp }: { logInPopUp: () => void }) => {
           <span className="exit-form" onClick={logInPopUp}>
             X
           </span>
-          <form action="">
-            <input type="text" placeholder="Username" required />
-            <input type="password" placeholder="Password" required />
+          <form action="/signup" method="post">
+            <input
+              type="text"
+              name="username"
+              placeholder="Username"
+              required
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
+            />
             <input type="password" placeholder="Confirm Password" required />
             <button type="submit" onClick={dissappearForm}>
               Sign Up
@@ -47,8 +57,18 @@ const LogIn = ({ logInPopUp }: { logInPopUp: () => void }) => {
             X
           </span>
           <form action="">
-            <input type="text" placeholder="Username" required />
-            <input type="password" placeholder="Password" required />
+            <input
+              type="text"
+              name="username"
+              placeholder="Username"
+              required
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
+            />
             <button type="submit" onClick={dissappearForm}>
               Log In
             </button>

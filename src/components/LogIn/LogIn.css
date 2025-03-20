@@ -42,3 +42,19 @@
   background-color: #242424;
   color: white;
 }
+
+.exit-form {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  margin: 0 5px;
+  padding: 5px 10px;
+
+  border-radius: 10px;
+}
+
+.exit-form:hover {
+  background-color: black;
+  cursor: pointer;
+}

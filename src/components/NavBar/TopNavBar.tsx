@@ -19,7 +19,7 @@ const TopNavBar = () => {
   }, [logInStatus]);
   return (
     <div className="top-nav">
-      {logInStatus ? null : <LogIn />}
+      {logInStatus ? null : <LogIn logInPopUp={logInPopUp} />}
       <div className="left-nav">
         <Link className="nav-button" to="/">
           Home

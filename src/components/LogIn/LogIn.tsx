@@ -1,7 +1,11 @@
 import "./LogIn.css";
 import { useState } from "react";
 
-const LogIn = () => {
+interface LogInInterface {
+  logInPopUp: () => void;
+}
+
+const LogIn: React.FC<LogInInterface> = ({ logInPopUp }) => {
   const [signUp, setSignUp] = useState(Boolean);
 
   const dissappearForm = () => {
@@ -24,6 +28,9 @@ const LogIn = () => {
       {signUp ? (
         <>
           <h3>Sign Up</h3>
+          <span className="exit-form" onClick={logInPopUp}>
+            X
+          </span>
           <form action="">
             <input type="text" placeholder="Username" required />
             <input type="password" placeholder="Password" required />
@@ -40,6 +47,9 @@ const LogIn = () => {
       ) : (
         <>
           <h3>Log In</h3>
+          <span className="exit-form" onClick={logInPopUp}>
+            X
+          </span>
           <form action="">
             <input type="text" placeholder="Username" required />
             <input type="password" placeholder="Password" required />

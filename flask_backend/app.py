@@ -1,12 +1,28 @@
-from flask import Flask, request, jsonify, session, redirect
+from flask import Flask, request, jsonify, session
 from flask_cors import CORS
-import sqlite3
+from flask_session import Session
 
+import sqlite3
+from datetime import timedelta
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
+
+# Configure session
 app.secret_key = 'secret_key_here'  # Set a secret key for session encryption
-CORS(app)  # Enable CORS for React frontend
+
+app.config['SESSION_COOKIE_SECURE'] = True
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+
+app.config["SESSION_TYPE"] = "filesystem"
+app.config["SESSION_COOKIE_SAMESITE"] = "None"
+
+app.permanent_session_lifetime = timedelta(hours=1)
+
+Session(app)
+
+CORS(app, supports_credentials=True, origins="http://localhost:5173")  # Enable CORS for React frontend
+
 
 # Database setup
 KANJI_DB_FILE = "kanji_data.db"
@@ -73,24 +89,35 @@ def login():
     username = request.form.get('username')
     password = request.form.get('password')
     hashed_password = generate_password_hash(password)
+    app.logger.info(f"Username: {username}, Password: {password}") 
+
 
     try:
-        cursor = conn.execute("SELECT id, username FROM users WHERE username = ?", (username))
+        cursor = conn.execute("SELECT id, password_hash FROM users WHERE username = ?", (username,))
         user = cursor.fetchone()
 
         if user:
             user_id, password_hash = user
-            if check_password_hash(hashed_password, password):
+            print("We are here!, user_id, password_hash", user_id, password_hash, flush=True)
+
+            if check_password_hash(password_hash, password):
                 session['user_id'] = user_id  # Store user ID in the session
-                return jsonify({"success": True, "message": "Logged in successfully!"}), 500
+                
+                return jsonify({"success": True, "message": "Logged in successfully!"}), 200
+        else:
+            return jsonify({"success": False, "message": "User not found!"}), 404
 
     except Exception as e:
+        app.logger.error(f"Error: {e}")
         return jsonify({"success": False, "message": str(e)}), 500
     finally:
         conn.close()
+        
 
-
-
+@app.route("/logout", methods=["GET", "POST"])
+def logout():
+    session.pop('user_id', None)  # Remove the user ID from the session
+    return jsonify({"success": True, "message": "Logged out successfully!"}), 200
 
 
 if __name__ == "__main__":

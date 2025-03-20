@@ -4,13 +4,6 @@ import { useState } from "react";
 const LogIn = ({ logInPopUp }: { logInPopUp: () => void }) => {
   const [signUp, setSignUp] = useState(Boolean);
 
-  const dissappearForm = () => {
-    const element = document.getElementById("login-box");
-    if (element) {
-      element.style.display = "none";
-    }
-  };
-
   const handleLogIn = () => {
     if (signUp) {
       setSignUp(false);
@@ -19,7 +12,7 @@ const LogIn = ({ logInPopUp }: { logInPopUp: () => void }) => {
     }
   };
 
-  const handleSignUpSubmit = (event) => {
+  const handleSignUpSubmit = (event, signOrLog) => {
     const element = document.getElementById("login-box");
     if (element) {
       element.style.display = "none";
@@ -31,13 +24,16 @@ const LogIn = ({ logInPopUp }: { logInPopUp: () => void }) => {
     const formData = new FormData(event.target.form);
 
     // Send form data to the backend using Fetch API
-    fetch("http://127.0.0.1:5000/signup", {
+    fetch(`http://127.0.0.1:5000/${signOrLog}`, {
       method: "POST",
       body: formData,
+      credentials: "include",
     })
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
+          console.log(data);
+        } else {
           console.log(data);
         }
       });
@@ -65,7 +61,10 @@ const LogIn = ({ logInPopUp }: { logInPopUp: () => void }) => {
               required
             />
             <input type="password" placeholder="Confirm Password" required />
-            <button type="submit" onClick={handleSignUpSubmit}>
+            <button
+              type="submit"
+              onClick={(event) => handleSignUpSubmit(event, "signup")}
+            >
               Sign Up
             </button>
             <p>Want to Log In?</p>
@@ -93,7 +92,10 @@ const LogIn = ({ logInPopUp }: { logInPopUp: () => void }) => {
               placeholder="Password"
               required
             />
-            <button type="submit" onClick={dissappearForm}>
+            <button
+              type="submit"
+              onClick={(event) => handleSignUpSubmit(event, "login")}
+            >
               Log In
             </button>
             <p>Not Signed Up?</p>

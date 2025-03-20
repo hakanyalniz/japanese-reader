@@ -4,7 +4,7 @@ import "./TopNavBar.css";
 import { useEffect, useState } from "react";
 
 const TopNavBar = () => {
-  const [logInStatus, setLogInStatus] = useState(Boolean);
+  const [logInStatus, setLogInStatus] = useState<boolean>(true);
 
   const logInPopUp = () => {
     if (logInStatus) {

@@ -19,6 +19,30 @@ const LogIn = ({ logInPopUp }: { logInPopUp: () => void }) => {
     }
   };
 
+  const handleSignUpSubmit = (event) => {
+    const element = document.getElementById("login-box");
+    if (element) {
+      element.style.display = "none";
+    }
+
+    event.preventDefault(); // Prevent the form from submitting normally
+
+    // Get form data
+    const formData = new FormData(event.target.form);
+
+    // Send form data to the backend using Fetch API
+    fetch("http://127.0.0.1:5000/signup", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          console.log(data);
+        }
+      });
+  };
+
   return (
     <div id="login-box">
       {signUp ? (
@@ -27,7 +51,7 @@ const LogIn = ({ logInPopUp }: { logInPopUp: () => void }) => {
           <span className="exit-form" onClick={logInPopUp}>
             X
           </span>
-          <form action="/signup" method="post">
+          <form action="/signup" method="post" id="signup-form">
             <input
               type="text"
               name="username"
@@ -41,7 +65,7 @@ const LogIn = ({ logInPopUp }: { logInPopUp: () => void }) => {
               required
             />
             <input type="password" placeholder="Confirm Password" required />
-            <button type="submit" onClick={dissappearForm}>
+            <button type="submit" onClick={handleSignUpSubmit}>
               Sign Up
             </button>
             <p>Want to Log In?</p>

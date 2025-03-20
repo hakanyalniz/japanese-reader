@@ -1,9 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session, redirect
 from flask_cors import CORS
 import sqlite3
-import bcrypt
+
+from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
+app.secret_key = 'secret_key_here'  # Set a secret key for session encryption
 CORS(app)  # Enable CORS for React frontend
 
 # Database setup
@@ -32,24 +34,36 @@ def get_data():
 
     return jsonify(result)
 
+
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     conn = get_db_connection(USER_DB_FILE)
 
     username = request.form.get('username')
     password = request.form.get('password')
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    app.logger.info(f"Username: {username}, Password: {password}")
+
+    hashed_password = generate_password_hash(password)
+
+    if not username or not password:
+        return jsonify({"success": False, "message": "Username and password are required."}), 400
 
     try:
         conn.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)", (username, hashed_password))
         conn.commit()
-        print("Succesfully signed up.")
-    except sqlite3.IntegrityError:
-        print("Error: Username already exists.")
+        return jsonify({"success": True, "message": "Signup successful!"}), 200
     except Exception as e:
-        print(f"An error occurred: {e}")
+        app.logger.error(f"Error: {e}")
+        return jsonify({"success": False, "message": str(e)}), 500
+    except sqlite3.IntegrityError as e:
+        app.logger.error(f"Integrity error: {e}")
+        return jsonify({"success": False, "message": "Username already exists."}), 400
+    except sqlite3.Error as e:
+        app.logger.error(f"Database error: {e}")
+        return jsonify({"success": False, "message": "Database error occurred."}), 500
     finally:
         conn.close()
+
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -58,17 +72,24 @@ def login():
 
     username = request.form.get('username')
     password = request.form.get('password')
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    hashed_password = generate_password_hash(password)
 
     try:
-        cursor = conn.execute("SELECT id, username FROM users WHERE username = ? AND password_hash = ?", (username, hashed_password))
-        rows = cursor.fetchall()
+        cursor = conn.execute("SELECT id, username FROM users WHERE username = ?", (username))
+        user = cursor.fetchone()
 
-        return rows
+        if user:
+            user_id, password_hash = user
+            if check_password_hash(hashed_password, password):
+                session['user_id'] = user_id  # Store user ID in the session
+                return jsonify({"success": True, "message": "Logged in successfully!"}), 500
+
     except Exception as e:
-        print(f"An error occurred: {e}")
+        return jsonify({"success": False, "message": str(e)}), 500
     finally:
         conn.close()
+
+
 
 
 

@@ -1,11 +1,7 @@
 import "./LogIn.css";
 import { useState } from "react";
 
-interface LogInInterface {
-  logInPopUp: () => void;
-}
-
-const LogIn: React.FC<LogInInterface> = ({ logInPopUp }) => {
+const LogIn = ({ logInPopUp }: { logInPopUp: () => void }) => {
   const [signUp, setSignUp] = useState(Boolean);
 
   const dissappearForm = () => {

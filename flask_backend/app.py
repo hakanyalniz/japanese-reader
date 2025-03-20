@@ -30,6 +30,15 @@ def get_data():
 
     return jsonify(result)
 
+@app.route("/SignUp", methods=["GET", "POST"])
+def register():
+    print("SignUp")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def register():
+    print("Login")
+
 
 if __name__ == "__main__":
     app.run(debug=True)

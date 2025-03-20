@@ -32,6 +32,7 @@ const LogIn = ({ logInPopUp }: { logInPopUp: () => void }) => {
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
+          localStorage.setItem("session", "Test");
           console.log(data);
         } else {
           console.log(data);

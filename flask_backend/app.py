@@ -113,12 +113,35 @@ def login():
     finally:
         conn.close()
         
+@app.route("/check-login", methods=["GET"])
+def checkLogin():
+    user_id = session.get('user_id')
+    if user_id:
+        return jsonify({"logged_in": True, "user_id": user_id})
+    return jsonify({"logged_in": False})
+
 
 @app.route("/logout", methods=["GET", "POST"])
 def logout():
     session.pop('user_id', None)  # Remove the user ID from the session
     return jsonify({"success": True, "message": "Logged out successfully!"}), 200
 
+
+@app.route('/protected-content', methods=['GET'])
+def protected_content():
+    # Check if user_id exists in the session
+    if 'user_id' not in session:
+        # User is not logged in, return unauthorized status
+        return jsonify({"success": False, "message": "Unauthorized - please log in first"}), 401
+    
+    # User is logged in, return protected content
+    user_id = session.get('user_id')
+    return jsonify({
+        "success": True, 
+        "message": "You are logged in!",
+        "user_id": user_id,
+        "protected_data": "This is secret content only for logged in users"
+    })
 
 if __name__ == "__main__":
     app.run(debug=True)

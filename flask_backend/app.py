@@ -94,15 +94,18 @@ def login():
     try:
         cursor = conn.execute("SELECT id, password_hash FROM users WHERE username = ?", (username,))
         user = cursor.fetchone()
-
         if user:
             user_id, password_hash = user
             print("We are here!, user_id, password_hash", user_id, password_hash, flush=True)
+
+            print("Does this work?", check_password_hash(password_hash, password) , flush=True)
 
             if check_password_hash(password_hash, password):
                 session['user_id'] = user_id  # Store user ID in the session
                 
                 return jsonify({"success": True, "message": "Logged in successfully!"}), 200
+            else:
+                return jsonify({"success": False, "message": "Username or password are wrong!"}), 401
         else:
             return jsonify({"success": False, "message": "User not found!"}), 401
 

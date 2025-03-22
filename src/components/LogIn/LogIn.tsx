@@ -12,6 +12,7 @@ const LogIn: React.FC<LoginInterface> = ({
   logInStatus,
   logInPopUp,
 }) => {
+  // This allows us to show either login or sign up form
   const [signUp, setSignUp] = useState(Boolean);
 
   const handleLogIn = () => {
@@ -22,11 +23,7 @@ const LogIn: React.FC<LoginInterface> = ({
     }
   };
 
-  const handleSignUpSubmit = (event, signOrLog) => {
-    // const element = document.getElementById("login-box");
-    // if (element) {
-    //   element.style.display = "none";
-    // }
+  const handleSignOrLogSubmit = (event, signOrLog) => {
     logInPopUp();
 
     event.preventDefault(); // Prevent the form from submitting normally
@@ -44,7 +41,10 @@ const LogIn: React.FC<LoginInterface> = ({
       .then((data) => {
         if (data.success) {
           localStorage.setItem("session", "Test");
-          setLogInStatus(true);
+
+          if (signOrLog == "login") {
+            setLogInStatus(true);
+          }
           console.log(data);
         } else {
           console.log(data);
@@ -76,7 +76,7 @@ const LogIn: React.FC<LoginInterface> = ({
             <input type="password" placeholder="Confirm Password" required />
             <button
               type="submit"
-              onClick={(event) => handleSignUpSubmit(event, "signup")}
+              onClick={(event) => handleSignOrLogSubmit(event, "signup")}
             >
               Sign Up
             </button>
@@ -107,7 +107,7 @@ const LogIn: React.FC<LoginInterface> = ({
             />
             <button
               type="submit"
-              onClick={(event) => handleSignUpSubmit(event, "login")}
+              onClick={(event) => handleSignOrLogSubmit(event, "login")}
             >
               Log In
             </button>
@@ -123,3 +123,5 @@ const LogIn: React.FC<LoginInterface> = ({
 };
 
 export default LogIn;
+
+// account based dictionary notebook

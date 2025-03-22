@@ -156,16 +156,16 @@ function Home() {
   }, []);
 
   // Check if we are logged in
-  useEffect(() => {
-    fetch("http://127.0.0.1:5000/check-login", {
-      method: "GET",
-      credentials: "include",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch("http://127.0.0.1:5000/check-login", {
+  //     method: "GET",
+  //     credentials: "include",
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       console.log(data);
+  //     });
+  // }, []);
 
   return (
     <div className="home-flex">

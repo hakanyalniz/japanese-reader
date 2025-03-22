@@ -32,7 +32,7 @@ const TopNavBar = () => {
 
   const checkLoginStatus = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/protected-content", {
+      const response = await fetch("http://127.0.0.1:5000/check-login", {
         method: "GET",
         credentials: "include", // Important for sending cookies
       });
@@ -53,7 +53,8 @@ const TopNavBar = () => {
 
   return (
     <div className="top-nav">
-      <button onClick={checkLoginStatus}>Logout</button>
+      <button onClick={logOut}>Logout</button>
+      <button onClick={checkLoginStatus}>Check Login Status</button>
       {logInStatus ? null : <LogIn logInPopUp={logInPopUp} />}
       <div className="left-nav">
         <Link className="nav-button" to="/">

@@ -1,7 +1,17 @@
 import "./LogIn.css";
 import { useState } from "react";
 
-const LogIn = ({ logInPopUp }: { logInPopUp: () => void }) => {
+interface LoginInterface {
+  setLogInStatus: React.Dispatch<React.SetStateAction<boolean>>;
+  logInStatus: boolean;
+  logInPopUp: () => void;
+}
+
+const LogIn: React.FC<LoginInterface> = ({
+  setLogInStatus,
+  logInStatus,
+  logInPopUp,
+}) => {
   const [signUp, setSignUp] = useState(Boolean);
 
   const handleLogIn = () => {
@@ -13,10 +23,11 @@ const LogIn = ({ logInPopUp }: { logInPopUp: () => void }) => {
   };
 
   const handleSignUpSubmit = (event, signOrLog) => {
-    const element = document.getElementById("login-box");
-    if (element) {
-      element.style.display = "none";
-    }
+    // const element = document.getElementById("login-box");
+    // if (element) {
+    //   element.style.display = "none";
+    // }
+    logInPopUp();
 
     event.preventDefault(); // Prevent the form from submitting normally
 
@@ -33,6 +44,7 @@ const LogIn = ({ logInPopUp }: { logInPopUp: () => void }) => {
       .then((data) => {
         if (data.success) {
           localStorage.setItem("session", "Test");
+          setLogInStatus(true);
           console.log(data);
         } else {
           console.log(data);

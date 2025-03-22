@@ -4,13 +4,16 @@ import "./TopNavBar.css";
 import { useEffect, useState } from "react";
 
 const TopNavBar = () => {
-  const [logInStatus, setLogInStatus] = useState<boolean>(true);
+  const [logInStatus, setLogInStatus] = useState<boolean>(false);
+  const [loginFormClose, setLoginFormClose] = useState(true);
 
+  // The loginFormClose is used to close or open the login box
   const logInPopUp = () => {
-    if (logInStatus) {
-      setLogInStatus(false);
+    console.log("test");
+    if (loginFormClose) {
+      setLoginFormClose(false);
     } else {
-      setLogInStatus(true);
+      setLoginFormClose(true);
     }
   };
 
@@ -22,13 +25,10 @@ const TopNavBar = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
+        setLogInStatus(false);
       });
     return;
   };
-
-  useEffect(() => {
-    console.log(logInStatus);
-  }, [logInStatus]);
 
   const checkLoginStatus = async () => {
     try {
@@ -36,26 +36,38 @@ const TopNavBar = () => {
         method: "GET",
         credentials: "include", // Important for sending cookies
       });
-
+      console.log("running");
       const data = await response.json();
 
       if (response.ok) {
         // Status code 200 means user is logged in
         console.log("Logged in as: ", data.user_id);
+        setLogInStatus(true);
       } else {
         // Status code 401 means user is not logged in
         console.log("Logged out");
+        setLogInStatus(false);
       }
     } catch (error) {
       console.error("Error checking login status:", error);
     }
   };
 
+  // Checks if user is logged in on page refresh
+  useEffect(() => {
+    checkLoginStatus();
+  }, []);
+
   return (
     <div className="top-nav">
-      <button onClick={logOut}>Logout</button>
       <button onClick={checkLoginStatus}>Check Login Status</button>
-      {logInStatus ? null : <LogIn logInPopUp={logInPopUp} />}
+      {loginFormClose ? null : (
+        <LogIn
+          logInStatus={logInStatus}
+          logInPopUp={logInPopUp}
+          setLogInStatus={setLogInStatus}
+        />
+      )}
       <div className="left-nav">
         <Link className="nav-button" to="/">
           Home
@@ -69,12 +81,12 @@ const TopNavBar = () => {
       </div>
       <div className="right-nav">
         {logInStatus ? (
-          <button className="nav-button" onClick={logInPopUp}>
-            Log in
-          </button>
-        ) : (
           <button className="nav-button" onClick={logOut}>
             Log out
+          </button>
+        ) : (
+          <button className="nav-button" onClick={logInPopUp}>
+            Log in
           </button>
         )}
       </div>

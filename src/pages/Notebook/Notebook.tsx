@@ -66,13 +66,14 @@ function Notebook() {
     handlePostNotebook();
   }, [logInStatus]);
 
-  // // If user is logged in, get their notebook from server
+  // If user is logged in, get their notebook from server
   useEffect(() => {
     console.log("fetching from database");
     if (logInStatus == true) {
       handleGetNotebook();
     }
-  });
+  }, []);
+  // If the above doesnt work, try logInStatus
 
   return (
     <div>

@@ -254,3 +254,4 @@ function Home() {
 export default Home;
 
 // Have the book stay on the same page even when you switch pages
+// There seems to be a small bug when deleting stuff

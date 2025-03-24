@@ -669,13 +669,34 @@ export async function getNoteBookData() {
  * Post notebook table from user_data.
  */
 export async function postNoteBookData(notebookContent: Array<unknown>) {
+  console.log("Inside helper post", notebookContent);
   try {
     const response = await fetch("http://127.0.0.1:5000/api/notebook", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(notebookContent), // Due to how addDictionaryHistory works, notebookContent is [[{}, {}]] and so on
+      body: JSON.stringify(notebookContent),
+      credentials: "include",
+    });
+    // Check if the response is OK (status code 2xx)
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error("An error occurred:", error);
+    throw error; // Optionally rethrow or handle error
+  }
+}
+
+export async function delNoteBookData(deleteItemId) {
+  try {
+    const response = await fetch("http://127.0.0.1:5000/api/notebookdel", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(deleteItemId),
       credentials: "include",
     });
     // Check if the response is OK (status code 2xx)

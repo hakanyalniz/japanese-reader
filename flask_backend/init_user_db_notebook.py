@@ -12,11 +12,12 @@ cursor.execute("PRAGMA foreign_keys = ON")
 
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS notebook (
-    id INTEGER PRIMARY KEY,
+    id INTEGER,
     user_id INTEGER NOT NULL,
     kanji TEXT,
     kana TEXT,
     meaning TEXT UNIQUE,
+    sentence TEXT,
     FOREIGN KEY(user_id) REFERENCES users(id)
 )
 """)

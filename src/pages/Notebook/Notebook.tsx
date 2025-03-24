@@ -12,6 +12,7 @@ import {
   checkLoginStatus,
   getNoteBookData,
   postNoteBookData,
+  delNoteBookData,
 } from "../Home/helpers";
 
 import "./Notebook.css";
@@ -24,7 +25,9 @@ function Notebook() {
 
   // Function to handle row deletion
   const handleDelete = (id: number) => {
-    dispatch(deleteDictionaryHistory(id)); // Dispatch the action with the row id
+    console.log("inside handledelete");
+    delNoteBookData(id);
+    dispatch(deleteDictionaryHistory(id));
   };
 
   const handleAddToAnki = () => {
@@ -59,7 +62,7 @@ function Notebook() {
   // If user is logged in, post their notebook into server
   useEffect(() => {
     handlePostNotebook();
-  }, [logInStatus, dictionaryHistory]);
+  }, [logInStatus]);
 
   // If user is logged in, get their notebook from server
   useEffect(() => {
@@ -67,6 +70,13 @@ function Notebook() {
       handleGetNotebook();
     }
   });
+
+  // Everytime dictionary history changes, change the one in the server too
+  useEffect(() => {
+    if (logInStatus == true) {
+      handlePostNotebook();
+    }
+  }, [dictionaryHistory]);
 
   return (
     <div>

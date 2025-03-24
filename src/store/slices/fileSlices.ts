@@ -18,26 +18,25 @@ const fileSlice = createSlice({
     addDictionaryHistory: (state, action) => {
       // If an item is already in the notebook, do not add it
       // confirm this via checking id
-      if (
-        state.dictionaryHistory.some(
-          (item) => Reflect.get(item, "id") === action.payload.id
-        )
-      ) {
-        return;
-      }
-      console.log("action.payload", action.payload);
       const items = Array.isArray(action.payload)
         ? action.payload
         : [action.payload];
 
-      items.forEach((item) => {
-        state.dictionaryHistory.push(item);
+      items.forEach((newItem) => {
+        if (
+          !state.dictionaryHistory.some(
+            (existing) => existing.id === newItem.id
+          )
+        ) {
+          state.dictionaryHistory.push(newItem);
+        }
       });
     },
     deleteDictionaryHistory: (state, action) => {
       state.dictionaryHistory = state.dictionaryHistory.filter((row) => {
         return row.id !== action.payload;
       });
+      console.log("Updated state:", state.dictionaryHistory); // ✅ Correctly shows new state
     },
     setCurrentlyDisplayedEpub: (state, action) => {
       state.currentlyDisplayedEpub = action.payload;

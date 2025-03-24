@@ -63,7 +63,7 @@ def get_notebook():
     
     # Get the notebook content
     if request.method == 'GET':
-        cursor = conn.execute("SELECT kanji, kana, meaning FROM notebook WHERE user_id = ?", (user_id,))
+        cursor = conn.execute("SELECT id, kanji, kana, meaning, sentence FROM notebook WHERE user_id = ?", (user_id,))
         rows = cursor.fetchall()
 
         result = [dict(row) for row in rows]
@@ -74,20 +74,45 @@ def get_notebook():
     # Post the notebook from client to server for keepint it permanent per user
     elif request.method == 'POST':
         notebookContent = request.get_json()
-        print("notebookContent", notebookContent, flush=True)
+        print("notebookContent inside flask", notebookContent, flush=True)
 
         if (notebookContent == None):
             return jsonify({"success": False, "message": "Invalid Data."}), 400
 
         for entry in notebookContent:
             try:
-                conn.execute("INSERT INTO notebook (user_id, kanji, kana, meaning) VALUES (?, ?, ?, ?)", (user_id, entry["kanji"], entry["kana"], entry["meaning"]))
+                print(entry)
+                conn.execute("INSERT INTO notebook (id, user_id, kanji, kana, meaning, sentence) VALUES (?, ?, ?, ?, ?, ?)", (entry["id"], user_id, entry["kanji"], entry["kana"], entry["meaning"], entry["sentence"]))
             except sqlite3.IntegrityError:
                 print("Entry already exists!", flush=True)
 
         conn.commit()     
         conn.close()
         return jsonify({"success": True, "message": "Successfully added content to notebook table."}), 200
+
+@app.route("/api/notebookdel", methods=["GET", "POST"])
+def del_notebook():
+    conn = get_db_connection(USER_DB_FILE)
+    user_id = session.get('user_id')
+
+    if (user_id == None):
+        return jsonify({"success": False, "message": "Not logged in."}), 400
+    
+    deleteItemId = request.get_json()
+
+    if (deleteItemId == None):
+        return jsonify({"success": False, "message": "Invalid Data."}), 400
+    
+    try:
+        conn.execute("DELETE FROM notebook WHERE id = ?", (deleteItemId,))
+        conn.commit()    
+    
+        return jsonify({"success": True}), 200
+            
+    except sqlite3.Error as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+    finally:
+        conn.close()    
 
 
 @app.route("/signup", methods=["GET", "POST"])

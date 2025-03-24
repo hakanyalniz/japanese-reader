@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import LogIn from "../LogIn/LogIn";
 import "./TopNavBar.css";
 import { useEffect, useState } from "react";
+import { checkLoginStatus } from "../../pages/Home/helpers";
 
 const TopNavBar = () => {
   const [logInStatus, setLogInStatus] = useState<boolean>(false);
@@ -30,37 +31,22 @@ const TopNavBar = () => {
     return;
   };
 
-  const checkLoginStatus = async () => {
-    try {
-      const response = await fetch("http://127.0.0.1:5000/check-login", {
-        method: "GET",
-        credentials: "include", // Important for sending cookies
-      });
-      console.log("running");
-      const data = await response.json();
-
-      if (response.ok) {
-        // Status code 200 means user is logged in
-        console.log("Logged in as: ", data.user_id);
-        setLogInStatus(true);
-      } else {
-        // Status code 401 means user is not logged in
-        console.log("Logged out");
-        setLogInStatus(false);
-      }
-    } catch (error) {
-      console.error("Error checking login status:", error);
-    }
-  };
-
   // Checks if user is logged in on page refresh
   useEffect(() => {
-    checkLoginStatus();
+    (async () => {
+      setLogInStatus(await checkLoginStatus());
+    })();
   }, []);
 
   return (
     <div className="top-nav">
-      <button onClick={checkLoginStatus}>Check Login Status</button>
+      <button
+        onClick={async () => {
+          setLogInStatus(await checkLoginStatus());
+        }}
+      >
+        Check Login Status
+      </button>
       {loginFormClose ? null : (
         <LogIn
           logInStatus={logInStatus}

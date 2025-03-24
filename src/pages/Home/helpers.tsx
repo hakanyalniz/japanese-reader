@@ -614,6 +614,33 @@ async function invokeAnkiConnect(action: string, params = {}) {
 }
 
 /**
+ * Check if the user is logged in or not.
+ */
+export const checkLoginStatus = async () => {
+  try {
+    const response = await fetch("http://127.0.0.1:5000/check-login", {
+      method: "GET",
+      credentials: "include", // Important for sending cookies
+    });
+    console.log("running");
+    const data = await response.json();
+
+    if (response.ok) {
+      // Status code 200 means user is logged in
+      console.log("Logged in as: ", data.user_id);
+      return true;
+    } else {
+      // Status code 401 means user is not logged in
+      console.log("Logged out");
+      return false;
+    }
+  } catch (error) {
+    console.error("Error checking login status:", error);
+    return false;
+  }
+};
+
+/**
  * Get notebook table from user_data.
  */
 export async function getNoteBookData() {

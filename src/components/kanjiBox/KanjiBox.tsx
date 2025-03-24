@@ -43,6 +43,10 @@ const KanjiBox: React.FC<KanjiBoxInterface> = ({
     positionX.current = event.clientX - -iframeRect.x - containerMarginLeft;
     positionY.current = event.clientY + 30;
 
+    if (positionY.current > iframeRect.height - 200) {
+      positionY.current -= 250;
+    }
+
     kanjiBox.current.style.top = `${positionY.current}px`;
     kanjiBox.current.style.left = `${positionX.current}px`;
   };

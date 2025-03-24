@@ -57,6 +57,7 @@ def get_notebook():
     user_id = session.get('user_id')
 
     # Check if the user is not logged in
+    print("user_id", user_id, flush=True)
     if (user_id == None):
         return jsonify({"success": False, "message": "Not logged in."}), 400
     
@@ -66,22 +67,27 @@ def get_notebook():
         rows = cursor.fetchall()
 
         result = [dict(row) for row in rows]
+        print("result", result, flush=True)
         conn.close()
         return jsonify(result)
     
     # Post the notebook from client to server for keepint it permanent per user
     elif request.method == 'POST':
-        notebookContent = request.form.get('notebook')
+        notebookContent = request.get_json()
+        print("notebookContent", notebookContent, flush=True)
 
         if (notebookContent == None):
             return jsonify({"success": False, "message": "Invalid Data."}), 400
 
         for entry in notebookContent:
-            conn.execute("INSERT INTO notebook (user_id, kanji, kana, meaning) VALUES (?, ?, ?, ?)", (user_id, entry.get("kanji"), entry["kana"], entry["meaning"]))
+            try:
+                conn.execute("INSERT INTO notebook (user_id, kanji, kana, meaning) VALUES (?, ?, ?, ?)", (user_id, entry.get("kanji"), entry["kana"], entry["meaning"]))
+            except sqlite3.IntegrityError:
+                print("Entry already exists!", flush=True)
 
         conn.commit()     
         conn.close()
-        return jsonify({"success": True, "message": "Successfully added content to notebook table."}), 500
+        return jsonify({"success": True, "message": "Successfully added content to notebook table."}), 200
 
 
 @app.route("/signup", methods=["GET", "POST"])

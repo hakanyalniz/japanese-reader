@@ -650,6 +650,7 @@ export async function getNoteBookData() {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
     });
 
     // Check if the response is OK (status code 2xx)
@@ -676,8 +677,8 @@ export async function postNoteBookData(notebookContent: Array<unknown>) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(notebookContent),
+      credentials: "include",
     });
-
     // Check if the response is OK (status code 2xx)
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);

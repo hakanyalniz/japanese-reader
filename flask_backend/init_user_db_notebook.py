@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS notebook (
     user_id INTEGER NOT NULL,
     kanji TEXT,
     kana TEXT,
-    meaning TEXT,
+    meaning TEXT UNIQUE,
     FOREIGN KEY(user_id) REFERENCES users(id)
 )
 """)

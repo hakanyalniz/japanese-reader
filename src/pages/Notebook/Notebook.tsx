@@ -2,13 +2,23 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   selectDictionaryHistory,
   deleteDictionaryHistory,
+  addDictionaryHistory,
 } from "../../store/slices/fileSlices";
 
-import { addCardToDeck } from "../Home/helpers";
+import { useState, useEffect } from "react";
+
+import {
+  addCardToDeck,
+  checkLoginStatus,
+  getNoteBookData,
+  postNoteBookData,
+} from "../Home/helpers";
 
 import "./Notebook.css";
 
 function Notebook() {
+  const [logInStatus, setLogInStatus] = useState<boolean>(false);
+
   const dictionaryHistory = useSelector(selectDictionaryHistory);
   const dispatch = useDispatch();
 
@@ -23,6 +33,41 @@ function Notebook() {
     });
   };
 
+  const handlePostNotebook = () => {
+    console.log("logInStatus", logInStatus);
+    if (logInStatus == true) {
+      console.log(dictionaryHistory);
+      postNoteBookData(dictionaryHistory);
+    }
+  };
+
+  const handleGetNotebook = async () => {
+    if (logInStatus == true) {
+      const noteBookContent = await getNoteBookData();
+      console.log("noteBookContent", noteBookContent);
+      // dispatch(addDictionaryHistory(noteBookContent));
+    }
+  };
+
+  // Checks if user is logged in on page refresh
+  useEffect(() => {
+    (async () => {
+      setLogInStatus(await checkLoginStatus());
+    })();
+  }, []);
+
+  // If user is logged in, post their notebook into server
+  useEffect(() => {
+    handlePostNotebook();
+  }, [logInStatus, dictionaryHistory]);
+
+  // If user is logged in, get their notebook from server
+  useEffect(() => {
+    if (logInStatus == true) {
+      handleGetNotebook();
+    }
+  });
+
   return (
     <div>
       <div className="table-container">
@@ -32,8 +77,16 @@ function Notebook() {
               <th>KANJI</th>
               <th>KANA</th>
               <th>MEANING</th>
-              <td className="add-anki" onClick={handleAddToAnki}>
-                <button className="nav-button">Add To Anki</button>
+              <td className="add-anki">
+                <button className="nav-button" onClick={handleAddToAnki}>
+                  Add To Anki
+                </button>
+                <button className="nav-button" onClick={handlePostNotebook}>
+                  Add To Notebook
+                </button>
+                <button className="nav-button" onClick={handleGetNotebook}>
+                  Get Notebook
+                </button>
               </td>
             </tr>
           </thead>

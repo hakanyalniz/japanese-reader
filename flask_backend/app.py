@@ -51,6 +51,39 @@ def get_data():
     return jsonify(result)
 
 
+@app.route("/api/notebook", methods=["GET", "POST"])
+def get_notebook():
+    conn = get_db_connection(USER_DB_FILE)
+    user_id = session.get('user_id')
+
+    # Check if the user is not logged in
+    if (user_id == None):
+        return jsonify({"success": False, "message": "Not logged in."}), 400
+    
+    # Get the notebook content
+    if request.method == 'GET':
+        cursor = conn.execute("SELECT kanji, kana, meaning FROM notebook WHERE user_id = ?", (user_id,))
+        rows = cursor.fetchall()
+
+        result = [dict(row) for row in rows]
+        conn.close()
+        return jsonify(result)
+    
+    # Post the notebook from client to server for keepint it permanent per user
+    elif request.method == 'POST':
+        notebookContent = request.form.get('notebook')
+
+        if (notebookContent == None):
+            return jsonify({"success": False, "message": "Invalid Data."}), 400
+
+        for entry in notebookContent:
+            conn.execute("INSERT INTO notebook (user_id, kanji, kana, meaning) VALUES (?, ?, ?, ?)", (user_id, entry.get("kanji"), entry["kana"], entry["meaning"]))
+
+        conn.commit()     
+        conn.close()
+        return jsonify({"success": True, "message": "Successfully added content to notebook table."}), 500
+
+
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     conn = get_db_connection(USER_DB_FILE)

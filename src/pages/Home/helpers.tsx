@@ -612,3 +612,10 @@ async function invokeAnkiConnect(action: string, params = {}) {
     throw error; // Optionally rethrow or handle error
   }
 }
+
+// /**
+//  * Fetch notebook table from user_data.
+//  */
+// export const fetchNoteBookData = () => {
+
+// }

@@ -1,3 +1,5 @@
+# Create the user database, which allows people to login and signup
+
 import sqlite3
 import json
 

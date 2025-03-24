@@ -252,3 +252,5 @@ function Home() {
 }
 
 export default Home;
+
+// Have the book stay on the same page even when you switch pages

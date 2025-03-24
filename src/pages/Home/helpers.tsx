@@ -669,7 +669,6 @@ export async function getNoteBookData() {
  * Post notebook table from user_data.
  */
 export async function postNoteBookData(notebookContent: Array<unknown>) {
-  console.log("Inside helper post", notebookContent);
   try {
     const response = await fetch("http://127.0.0.1:5000/api/notebook", {
       method: "POST",
@@ -689,6 +688,9 @@ export async function postNoteBookData(notebookContent: Array<unknown>) {
   }
 }
 
+/**
+ * Delete item from server size table in the SQL database.
+ */
 export async function delNoteBookData(deleteItemId) {
   try {
     const response = await fetch("http://127.0.0.1:5000/api/notebookdel", {

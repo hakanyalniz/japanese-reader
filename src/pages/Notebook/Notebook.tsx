@@ -61,22 +61,18 @@ function Notebook() {
 
   // If user is logged in, post their notebook into server
   useEffect(() => {
+    console.log("posting to database");
+
     handlePostNotebook();
   }, [logInStatus]);
 
-  // If user is logged in, get their notebook from server
+  // // If user is logged in, get their notebook from server
   useEffect(() => {
+    console.log("fetching from database");
     if (logInStatus == true) {
       handleGetNotebook();
     }
   });
-
-  // Everytime dictionary history changes, change the one in the server too
-  useEffect(() => {
-    if (logInStatus == true) {
-      handlePostNotebook();
-    }
-  }, [dictionaryHistory]);
 
   return (
     <div>

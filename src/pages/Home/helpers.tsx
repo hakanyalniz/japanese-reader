@@ -613,9 +613,50 @@ async function invokeAnkiConnect(action: string, params = {}) {
   }
 }
 
-// /**
-//  * Fetch notebook table from user_data.
-//  */
-// export const fetchNoteBookData = () => {
+/**
+ * Get notebook table from user_data.
+ */
+export async function getNoteBookData() {
+  try {
+    const response = await fetch("http://127.0.0.1:5000/api/notebook", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-// }
+    // Check if the response is OK (status code 2xx)
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result.result;
+  } catch (error) {
+    console.error("An error occurred:", error);
+    throw error; // Optionally rethrow or handle error
+  }
+}
+
+/**
+ * Post notebook table from user_data.
+ */
+export async function postNoteBookData(notebookContent: Array<unknown>) {
+  try {
+    const response = await fetch("http://127.0.0.1:5000/api/notebook", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(notebookContent),
+    });
+
+    // Check if the response is OK (status code 2xx)
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error("An error occurred:", error);
+    throw error; // Optionally rethrow or handle error
+  }
+}

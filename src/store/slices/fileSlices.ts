@@ -25,7 +25,14 @@ const fileSlice = createSlice({
       ) {
         return;
       }
-      state.dictionaryHistory.push(action.payload);
+      console.log("action.payload", action.payload);
+      const items = Array.isArray(action.payload)
+        ? action.payload
+        : [action.payload];
+
+      items.forEach((item) => {
+        state.dictionaryHistory.push(item);
+      });
     },
     deleteDictionaryHistory: (state, action) => {
       state.dictionaryHistory = state.dictionaryHistory.filter((row) => {

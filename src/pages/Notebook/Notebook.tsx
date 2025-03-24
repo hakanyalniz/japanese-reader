@@ -36,7 +36,7 @@ function Notebook() {
   const handlePostNotebook = () => {
     console.log("logInStatus", logInStatus);
     if (logInStatus == true) {
-      console.log(dictionaryHistory);
+      console.log("dictionaryHistory", dictionaryHistory);
       postNoteBookData(dictionaryHistory);
     }
   };
@@ -45,7 +45,7 @@ function Notebook() {
     if (logInStatus == true) {
       const noteBookContent = await getNoteBookData();
       console.log("noteBookContent", noteBookContent);
-      // dispatch(addDictionaryHistory(noteBookContent));
+      dispatch(addDictionaryHistory(noteBookContent));
     }
   };
 

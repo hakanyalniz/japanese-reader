@@ -657,9 +657,8 @@ export async function getNoteBookData() {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-
     const result = await response.json();
-    return result.result;
+    return result;
   } catch (error) {
     console.error("An error occurred:", error);
     throw error; // Optionally rethrow or handle error
@@ -676,7 +675,7 @@ export async function postNoteBookData(notebookContent: Array<unknown>) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(notebookContent),
+      body: JSON.stringify(notebookContent), // Due to how addDictionaryHistory works, notebookContent is [[{}, {}]] and so on
       credentials: "include",
     });
     // Check if the response is OK (status code 2xx)

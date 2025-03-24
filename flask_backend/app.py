@@ -81,7 +81,7 @@ def get_notebook():
 
         for entry in notebookContent:
             try:
-                conn.execute("INSERT INTO notebook (user_id, kanji, kana, meaning) VALUES (?, ?, ?, ?)", (user_id, entry.get("kanji"), entry["kana"], entry["meaning"]))
+                conn.execute("INSERT INTO notebook (user_id, kanji, kana, meaning) VALUES (?, ?, ?, ?)", (user_id, entry["kanji"], entry["kana"], entry["meaning"]))
             except sqlite3.IntegrityError:
                 print("Entry already exists!", flush=True)
 
